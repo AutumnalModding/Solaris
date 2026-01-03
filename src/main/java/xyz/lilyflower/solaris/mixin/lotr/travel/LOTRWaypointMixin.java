@@ -12,11 +12,13 @@ import xyz.lilyflower.solaris.configuration.modules.SolarisLOTR;
 public class LOTRWaypointMixin {
     @Inject(method = "hasPlayerUnlocked", at = @At("HEAD"), cancellable = true, remap = false)
     public void modifyUnlockStatus(EntityPlayer entityplayer, CallbackInfoReturnable<Boolean> cir) {
-        if (SolarisLOTR.UNLOCK_WAYPOINTS) {
+        LOTRWaypoint waypoint = (LOTRWaypoint) (Object) this;
+
+        if (SolarisLOTR.UNLOCK_WAYPOINTS || SolarisLOTR.isWaypointGlobal(waypoint)) {
             cir.setReturnValue(true);
         }
 
-        if (SolarisLOTR.isWaypointDisabled((LOTRWaypoint) (Object) this)) {
+        if (SolarisLOTR.isWaypointDisabled(waypoint)) {
             cir.setReturnValue(false);
         }
     }
@@ -30,7 +32,8 @@ public class LOTRWaypointMixin {
 
     @Inject(method = "isHidden", at = @At("HEAD"), cancellable = true, remap = false)
     public void disableWaypoint(CallbackInfoReturnable<Boolean> cir) {
-        if (SolarisLOTR.isWaypointDisabled((LOTRWaypoint) (Object) this)) {
+        LOTRWaypoint waypoint = (LOTRWaypoint) (Object) this;
+        if (SolarisLOTR.isWaypointDisabled(waypoint)) {
             cir.setReturnValue(true);
         }
     }

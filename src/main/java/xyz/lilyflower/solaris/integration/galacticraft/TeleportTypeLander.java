@@ -1,5 +1,6 @@
 package xyz.lilyflower.solaris.integration.galacticraft;
 
+import cpw.mods.fml.common.Loader;
 import java.util.Random;
 import micdoodle8.mods.galacticraft.api.vector.Vector3;
 import micdoodle8.mods.galacticraft.api.world.IExitHeight;
@@ -7,10 +8,13 @@ import micdoodle8.mods.galacticraft.api.world.ITeleportType;
 import micdoodle8.mods.galacticraft.core.entities.EntityLander;
 import micdoodle8.mods.galacticraft.core.entities.EntityLanderBase;
 import micdoodle8.mods.galacticraft.core.entities.player.GCPlayerStats;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import vazkii.botania.common.block.ModBlocks;
 
 public class TeleportTypeLander implements ITeleportType, IExitHeight {
     @Override public boolean useParachute() { return false; }
@@ -29,6 +33,14 @@ public class TeleportTypeLander implements ITeleportType, IExitHeight {
     public Vector3 getPlayerSpawnLocation(WorldServer server, EntityPlayerMP player) {
         if (player == null) return null;
         GCPlayerStats stats = GCPlayerStats.get(player);
+
+        Block target = Loader.isModLoaded("Botania") ? ModBlocks.bifrostPerm : Blocks.bedrock;
+        for (int x = 0; x < 5; x++) {
+            for (int z = 0; z < 5; z++) {
+                server.setBlock((int) stats.coordsTeleportedFromX - 2 + x, 0, (int) stats.coordsTeleportedFromZ - 2 + z, target);
+            }
+        }
+
         return new Vector3(stats.coordsTeleportedFromX, this.getYCoordinateToTeleport(), stats.coordsTeleportedFromZ);
     }
 

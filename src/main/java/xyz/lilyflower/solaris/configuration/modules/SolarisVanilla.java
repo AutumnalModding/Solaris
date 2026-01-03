@@ -21,6 +21,7 @@ public final class SolarisVanilla implements ConfigurationModule {
 
         NO_IFRAME_PROJECTILES = configuration.getBoolean("noImmunityForProjectiles", "vanilla.damage", false, "Make projectiles ignore iframes.");
     };
+
     public static final Consumer<Configuration> BANDAID_FIXES = configuration -> {
         DISABLE_SNOW_UPDATES = configuration.getBoolean("disableSnowUpdates", "bandaid", false, "Disables snow sheet blocks from sending neighbour updates.\nCan stop StackOverflowExceptions in some cases.");
         DISABLE_WORLDGEN_SPAWNING = configuration.getBoolean("disableWorldgenSpawning", "bandaid", false, "Disables animals spawning during worldgen.\nCan fix 'this.entitiesByUuid is null' crashes during world creation.");

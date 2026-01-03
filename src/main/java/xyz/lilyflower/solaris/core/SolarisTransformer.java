@@ -34,7 +34,7 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 public class SolarisTransformer implements ClassFileTransformer {
     private static boolean CASCADING = false;
     static LaunchClassLoader LOADER = null;
-    public static final boolean DEBUG_ENABLED = Files.exists(Paths.get(".classes/"));
+    public static final boolean DEBUG_ENABLED = Files.exists(Paths.get(".classes/")) || System.getProperty("solaris.debug") != null;
     private static final HashMap<String, Class<? extends SolarisClassTransformer>> TRANSFORMERS = new HashMap<>();
 
     @Override
@@ -46,12 +46,12 @@ public class SolarisTransformer implements ClassFileTransformer {
         reader.accept(node, 0);
 
         name = reader.getClassName();
-        SolarisBootstrap.LOGGER.debug("Class: {}", name);
+        if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Class: {}", name);
         if (TRANSFORMERS.containsKey(name)) {
             try {
                 boolean modified = false;
                 Class<? extends SolarisClassTransformer> transformer = TRANSFORMERS.get(name);
-                SolarisBootstrap.LOGGER.debug("  Transformer: {}", transformer.getSimpleName());
+                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  Transformer: {}", transformer.getSimpleName());
                 SolarisClassTransformer instance = transformer.newInstance();
                 ArrayList<String> methods = new ArrayList<>();
                 Arrays.stream(transformer.getDeclaredMethods()).iterator().forEachRemaining(method -> methods.add(method.getName()));
@@ -61,7 +61,8 @@ public class SolarisTransformer implements ClassFileTransformer {
                     metadata = invoke(transformer, instance, node, null);
                     modified |= metadata;
                 }
-                SolarisBootstrap.LOGGER.debug("  [{}] Metadata", (metadata ? "X" : " "));
+
+                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Metadata", (metadata ? "X" : " "));
 
                 for (MethodNode method : node.methods) {
                     boolean transformed = false; // i.e. solaris$init or solaris$clinit
@@ -69,7 +70,8 @@ public class SolarisTransformer implements ClassFileTransformer {
                         transformed = invoke(transformer, instance, node, method);
                         modified |= transformed;
                     }
-                    SolarisBootstrap.LOGGER.debug("  [{}] {}", (transformed ? "X" : " "), method.name);
+
+                    if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] {}", (transformed ? "X" : " "), method.name);
                 }
 
                 if (modified) {
@@ -77,7 +79,7 @@ public class SolarisTransformer implements ClassFileTransformer {
                     bytes = writer.toByteArray();
                 }
 
-                SolarisBootstrap.LOGGER.debug("  [{}] Modified", (modified ? "X" : " "));
+                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Modified", (modified ? "X" : " "));
             } catch (Throwable exception) { // this is bad practice but fuck it, do it anyway
                 if (exception instanceof NoClassDefFoundError error && !CASCADING) {
                     CASCADING = true;

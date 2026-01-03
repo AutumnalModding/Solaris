@@ -1,6 +1,5 @@
 package xyz.lilyflower.solaris.internal.illumos;
 
-import com.gildedgames.the_aether.world.AetherWorldProvider;
 import com.teammetallurgy.atum.world.AtumWorldProvider;
 import java.util.Arrays;
 import java.util.List;
@@ -13,12 +12,11 @@ import micdoodle8.mods.galacticraft.api.galaxies.SolarSystem;
 import micdoodle8.mods.galacticraft.api.galaxies.Star;
 import micdoodle8.mods.galacticraft.api.vector.Vector3;
 import micdoodle8.mods.galacticraft.api.world.IAtmosphericGas;
-import micdoodle8.mods.galacticraft.core.GalacticraftCore;
 import micdoodle8.mods.galacticraft.core.dimension.TeleportTypeOverworld;
 import micdoodle8.mods.galacticraft.core.dimension.WorldProviderMoon;
 import micdoodle8.mods.galacticraft.planets.asteroids.dimension.WorldProviderAsteroids;
-import micdoodle8.mods.galacticraft.planets.mars.MarsModule;
 import micdoodle8.mods.galacticraft.planets.mars.dimension.WorldProviderMars;
+import net.aetherteam.aether.worldgen.WorldProviderAether;
 import net.minecraft.util.ResourceLocation;
 import xyz.lilyflower.solaris.api.LoadStage;
 import xyz.lilyflower.solaris.api.SolarisIntegrationModule;
@@ -29,13 +27,13 @@ import xyz.lilyflower.solaris.integration.galacticraft.TeleportTypeDropPod;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 
 public class PlanetSetup implements SolarisIntegrationModule {
-    public static final SolarSystem MEDIAKORIA = new SolarSystem("mediakoria", "milkyWay")
+    public static final SolarSystem ORACLE = new SolarSystem("oracle", "milkyWay")
             .setMapPosition(new Vector3(0, 0, 0));
 
     public static final Star EYE_OF_VELZIE = (Star) new Star("eov")
-            .setParentSolarSystem(MEDIAKORIA)
+            .setParentSolarSystem(ORACLE)
             .setTierRequired(2)
-            .setBodyIcon(BODY_TEXTURE("neptune"))
+            .setBodyIcon(ICON("neptune"))
             .atmosphereComponent(IAtmosphericGas.OXYGEN)
             .atmosphereComponent(IAtmosphericGas.HELIUM)
             .atmosphereComponent(IAtmosphericGas.HYDROGEN)
@@ -44,10 +42,10 @@ public class PlanetSetup implements SolarisIntegrationModule {
             .setRelativeDistanceFromCenter(new CelestialBody.ScalableDistance(0.0F, 0.0F));
 
     public static final Planet ARDA = (Planet) new Planet("arda")
-            .setParentSolarSystem(MEDIAKORIA)
+            .setParentSolarSystem(ORACLE)
             .setTierRequired(1)
             .setRelativeOrbitTime(2.0F)
-            .setBodyIcon(BODY_TEXTURE("earth"))
+            .setBodyIcon(ICON("earth"))
             .atmosphereComponent(IAtmosphericGas.ARGON)
             .atmosphereComponent(IAtmosphericGas.OXYGEN)
             .atmosphereComponent(IAtmosphericGas.WATER)
@@ -55,72 +53,75 @@ public class PlanetSetup implements SolarisIntegrationModule {
             .setDimensionInfo(32767, MiddleEarthPlanetProvider.class);
 
     public static final Planet ERIS = (Planet) new Planet("eris")
-            .setParentSolarSystem(MEDIAKORIA)
+            .setParentSolarSystem(ORACLE)
             .setTierRequired(1)
             .setRelativeOrbitTime(20.0F)
-            .setBodyIcon(BODY_TEXTURE("moon"))
+            .setBodyIcon(ICON("moon"))
             .setDimensionInfo(-28, WorldProviderMoon.class)
             .setRelativeDistanceFromCenter(new CelestialBody.ScalableDistance(1.15F, 1.15F));
 
     public static final Planet KV62 = (Planet) new Planet("KV62")
-            .setParentSolarSystem(MEDIAKORIA)
+            .setParentSolarSystem(ORACLE)
             .setTierRequired(1)
             .setRelativeSize(1.45F)
             .setRelativeOrbitTime(35.0F)
-            .setBodyIcon(BODY_TEXTURE("venus"))
+            .setBodyIcon(ICON("venus"))
             .atmosphereComponent(IAtmosphericGas.CO2)
             .atmosphereComponent(IAtmosphericGas.OXYGEN)
             .atmosphereComponent(IAtmosphericGas.METHANE)
             .setDimensionInfo(32766, AtumPlanetProvider.class)
             .setRelativeDistanceFromCenter(new CelestialBody.ScalableDistance(1.375F, 1.375F));
 
-    public static final Planet SEDNA = (Planet) new Planet("sedna")
-            .setParentSolarSystem(MEDIAKORIA)
+    public static final Planet CYALUME_BELT = (Planet) new Planet("cyalume")
+            .setParentSolarSystem(ORACLE)
+            .setTierRequired(3)
+            .setRelativeOrbitTime(45.0F)
+            .setBodyIcon(ICON("asteroid"))
+            .setPhaseShift(SolarisExtensions.TAU) // 2π
+            .setDimensionInfo(-30, WorldProviderAsteroids.class)
+            .setRelativeDistanceFromCenter(new CelestialBody.ScalableDistance(1.75F, 1.75F));
+
+    // Yes, I know this one's a star. No, I don't care lmao
+    public static final Planet EPSILON_ERIDANI = (Planet) new Planet("eridani")
+            .setParentSolarSystem(ORACLE)
             .setTierRequired(2)
             .setPhaseShift(0.1667F)
             .setRelativeSize(0.535F)
             .setRelativeOrbitTime(1.95F)
-            .setBodyIcon(BODY_TEXTURE("mars"))
+            .setBodyIcon(ICON("mars"))
             .atmosphereComponent(IAtmosphericGas.CO2)
             .atmosphereComponent(IAtmosphericGas.ARGON)
             .atmosphereComponent(IAtmosphericGas.NITROGEN)
             .setDimensionInfo(-29, WorldProviderMars.class)
             .setRelativeDistanceFromCenter(new CelestialBody.ScalableDistance(1.25F, 1.25F));
 
-    public static final Planet CERUE = (Planet) new Planet("cerue")
-            .setParentSolarSystem(MEDIAKORIA)
-            .setTierRequired(3)
-            .setRelativeOrbitTime(45.0F)
-            .setBodyIcon(BODY_TEXTURE("asteroid"))
-            .setPhaseShift(SolarisExtensions.TAU) // 2π
-            .setDimensionInfo(-30, WorldProviderAsteroids.class)
-            .setRelativeDistanceFromCenter(new CelestialBody.ScalableDistance(1.75F, 1.75F));
-
     @Override
     public void run() {
         Solaris.LOGGER.info("Registering Galacticraft planets...");
-        MEDIAKORIA.setMainStar(EYE_OF_VELZIE);
-        GalaxyRegistry.registerSolarSystem(MEDIAKORIA);
+        StarRegistry.STARS.add(EYE_OF_VELZIE);
+        ORACLE.setMainStar(EYE_OF_VELZIE);
+        GalaxyRegistry.registerSolarSystem(ORACLE);
         GalaxyRegistry.registerPlanet(ARDA);
         GalaxyRegistry.registerPlanet(ERIS);
         GalaxyRegistry.registerPlanet(KV62);
-        GalaxyRegistry.registerPlanet(SEDNA);
-        GalaxyRegistry.registerPlanet(CERUE);
-        StarRegistry.add(EYE_OF_VELZIE);
+        GalaxyRegistry.registerPlanet(CYALUME_BELT);
+        GalaxyRegistry.registerPlanet(EPSILON_ERIDANI);
 
         GalacticraftRegistry.registerTeleportType(AtumWorldProvider.class, new TeleportTypeBalloons());
-        GalacticraftRegistry.registerTeleportType(AtumPlanetProvider.class, new TeleportTypeBalloons());
-        GalacticraftRegistry.registerTeleportType(AetherWorldProvider.class, new TeleportTypeDropPod());
-        GalacticraftRegistry.registerTeleportType(AetherPlanetProvider.class, new TeleportTypeDropPod());
-        GalacticraftRegistry.registerTeleportType(MiddleEarthPlanetProvider.class, new TeleportTypeOverworld());
+        GalacticraftRegistry.registerTeleportType(WorldProviderAether.class, new TeleportTypeDropPod());
         GalacticraftRegistry.registerTeleportType(LOTRWorldProviderMiddleEarth.class, new TeleportTypeOverworld());
 
-        GalacticraftRegistry.registerRocketGui(AtumWorldProvider.class, new ResourceLocation(MarsModule.ASSET_PREFIX, "textures/gui/marsRocketGui.png"));
-        GalacticraftRegistry.registerRocketGui(LOTRWorldProviderMiddleEarth.class, new ResourceLocation(GalacticraftCore.ASSET_PREFIX, "textures/gui/overworldRocketGui.png"));
+        GalacticraftRegistry.registerTeleportType(AtumPlanetProvider.class, new TeleportTypeBalloons());
+        GalacticraftRegistry.registerTeleportType(AetherPlanetProvider.class, new TeleportTypeDropPod());
+        GalacticraftRegistry.registerTeleportType(MiddleEarthPlanetProvider.class, new TeleportTypeOverworld());
+
+        GalacticraftRegistry.registerRocketGui(AtumWorldProvider.class, new ResourceLocation("galacticraftmars", "textures/gui/marsRocketGui.png"));
+        GalacticraftRegistry.registerRocketGui(WorldProviderAether.class, new ResourceLocation("solaris", "textures/gui/celestial/aetherRocketGui.png"));
+        GalacticraftRegistry.registerRocketGui(LOTRWorldProviderMiddleEarth.class, new ResourceLocation("galacticraftcore", "textures/gui/overworldRocketGui.png"));
     }
 
-    private static ResourceLocation BODY_TEXTURE(String body) {
-        return new ResourceLocation(GalacticraftCore.ASSET_PREFIX, "textures/gui/celestialbodies/" + body + ".png");
+    private static ResourceLocation ICON(String body) {
+        return new ResourceLocation("galacticraftcore", "textures/gui/celestialbodies/" + body + ".png");
     }
 
     @Override

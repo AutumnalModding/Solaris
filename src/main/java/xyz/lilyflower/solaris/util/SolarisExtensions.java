@@ -3,7 +3,8 @@ package xyz.lilyflower.solaris.util;
 import com.github.bsideup.jabel.Desugar;
 
 public class SolarisExtensions {
-    public static final float TAU = 6.283185307179586F;
+    public static final float TAU = 6.2831853F;
+    public static final float PI = 3.1415927F;
 
     public static String basename(String name) { return name.replaceAll("\\." + extension(name), ""); }
 

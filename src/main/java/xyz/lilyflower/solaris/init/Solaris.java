@@ -10,11 +10,18 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import lotr.common.LOTRMod;
 import lotr.common.LOTRTime;
+import net.aetherteam.aether.items.consumables.ItemContinuum;
+import net.aetherteam.aether.recipes.AetherRecipes;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +29,7 @@ import xyz.lilyflower.solaris.api.SolarisIntegrationModule;
 import xyz.lilyflower.solaris.api.ConfigurationModule;
 import xyz.lilyflower.solaris.api.LoadStage;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
+import xyz.lilyflower.solaris.configuration.modules.SolarisAether;
 import xyz.lilyflower.solaris.configuration.modules.SolarisContent;
 import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
 import xyz.lilyflower.solaris.configuration.modules.SolarisLOTR;
@@ -93,11 +101,34 @@ public class Solaris {
     }
 
     @EventHandler
+    @SuppressWarnings("unchecked")
     public void postInit(FMLPostInitializationEvent event) {
         STATE = LoadStage.FINALIZE;
         if (Loader.isModLoaded("lotr")) {
             SolarisLOTR.registerModdedWeapons();
             LOTRTime.DAY_LENGTH = (int) (SolarisLOTR.TIME_BASE * SolarisLOTR.TIME_MULTIPLIER);
+        }
+        
+        if (Loader.isModLoaded("aether") && SolarisAether.CONTINUUM_DANGEROUS) {
+            try {
+                Class<ItemContinuum> clazz = ItemContinuum.class;
+                Field possible = clazz.getDeclaredField("possibleItems");
+                possible.setAccessible(true);
+                ArrayList<ItemStack> list = (ArrayList<ItemStack>) possible.get(null);
+                list.clear();
+                for (Object obj : Item.itemRegistry) {
+                    list.add(new ItemStack((Item) obj));
+                }
+
+                for (Object obj : Block.blockRegistry) {
+                    list.add(new ItemStack(Item.getItemFromBlock((Block) obj)));
+                }
+
+                possible.set(null, list);
+                Solaris.LOGGER.info("Found {} items, {} blocks. {} possible Continuum Orb items. Happy gambling!", Item.itemRegistry.getKeys().size(), Block.blockRegistry.getKeys().size(), list.size());
+            } catch (NoSuchFieldException | IllegalAccessException exception) {
+                throw new RuntimeException(exception);
+            }
         }
 
         SolarisRegistry.initialize();

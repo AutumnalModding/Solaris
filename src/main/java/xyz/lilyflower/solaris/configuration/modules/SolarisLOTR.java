@@ -18,9 +18,10 @@ public class SolarisLOTR implements ConfigurationModule {
     public static int TIME_BASE = 48000;
     public static float TIME_MULTIPLIER = 1;
     public static boolean OMNICIDE_MODE = false;
+    public static List<String> GLOBAL_WAYPOINTS;
     public static List<String> DISABLED_WAYPOINTS;
     public static String[] ADDITIONAL_COMBAT_ITEMS;
-    public static boolean UNLOCK_COSMETICS = false;
+    public static boolean UNLOCK_COSMETICS = true;
     public static boolean UNLOCK_WAYPOINTS = false;
     public static boolean FIX_ORE_DICTIONARY = true;
     public static boolean NO_WAYPOINT_LOCKING = false;
@@ -70,6 +71,12 @@ public class SolarisLOTR implements ConfigurationModule {
                 Example: 'MORANNON' would disable the Black Gate waypoint (display names and internal names often do not match!)"""
         ));
 
+        GLOBAL_WAYPOINTS = Arrays.asList(configuration.getStringList("globalWaypoints", "lotr.travel", new String[]{},
+                """
+                List of waypoints to globally enable.
+                Same format as disabledWaypoints."""
+        ));
+
         UNLOCK_WAYPOINTS = configuration.getBoolean("unlockAllWaypoints", "lotr.travel", false, "Unlocks all fast travel waypoints.");
         NO_WAYPOINT_LOCKING = configuration.getBoolean("disableWaypointLocking", "lotr.travel", false, "Disables alignment-based waypoint locking.");
     };
@@ -77,6 +84,14 @@ public class SolarisLOTR implements ConfigurationModule {
     public static boolean isWaypointDisabled(LOTRWaypoint waypoint) {
         try {
             return DISABLED_WAYPOINTS.contains(waypoint.name());
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    public static boolean isWaypointGlobal(LOTRWaypoint waypoint) {
+        try {
+            return GLOBAL_WAYPOINTS.contains(waypoint.name());
         } catch (Throwable ignored) {
             return false;
         }

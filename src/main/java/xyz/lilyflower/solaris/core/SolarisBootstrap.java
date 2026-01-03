@@ -68,7 +68,7 @@ public class SolarisBootstrap implements ITweaker {
                     ByteBuddyAgent.AttachmentProvider.ForStandardToolsJarVm.JDK_ROOT,
                     ByteBuddyAgent.AttachmentProvider.ForStandardToolsJarVm.MACINTOSH,
                     ByteBuddyAgent.AttachmentProvider.ForUserDefinedToolsJar.INSTANCE
-            );
+            ); // <-- DEFAULT, minus JNA.
             Instrumentation agent = ByteBuddyAgent.install(provider);
             agent.addTransformer(new SolarisTransformer(), true);
         } catch (ExceptionInInitializerError error) {
@@ -89,7 +89,7 @@ public class SolarisBootstrap implements ITweaker {
 
         String enabled = System.getProperty("solaris.earlyconfig");
         LOGGER.info("If it freezes here, try restarting with -Dsolaris.earlyconfig=false as a JVM argument!");
-        if (enabled != null && !enabled.equals("false")) {
+        if (enabled == null || !enabled.equals("false")) {
             LOGGER.info("Scanning transformer settings modules..."); int count = 0; // love that you can just Do This for compacting lines.
             List<Class<TransformerSettingsModule>> modules = ClasspathScanning.implementations(TransformerSettingsModule.class, false, false);
             for (Class<TransformerSettingsModule> module : modules) {

@@ -1,10 +1,10 @@
 package xyz.lilyflower.solaris.internal.illumos;
 
-import com.gildedgames.the_aether.world.AetherWorldProvider;
 import micdoodle8.mods.galacticraft.api.galaxies.CelestialBody;
+import net.aetherteam.aether.worldgen.WorldProviderAether;
 import xyz.lilyflower.solaris.integration.galacticraft.PlanetProvider;
 
-public class AetherPlanetProvider extends AetherWorldProvider implements PlanetProvider {
+public class AetherPlanetProvider extends WorldProviderAether implements PlanetProvider {
     @Override
     public CelestialBody getCelestialBody() {
         return PlanetSetup.EYE_OF_VELZIE;
