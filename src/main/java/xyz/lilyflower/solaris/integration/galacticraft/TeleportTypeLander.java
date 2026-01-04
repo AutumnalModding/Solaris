@@ -34,10 +34,12 @@ public class TeleportTypeLander implements ITeleportType, IExitHeight {
         if (player == null) return null;
         GCPlayerStats stats = GCPlayerStats.get(player);
 
+        int centerX = (int) Math.round(stats.coordsTeleportedFromX);
+        int centerZ = (int) Math.round(stats.coordsTeleportedFromZ);
         Block target = Loader.isModLoaded("Botania") ? ModBlocks.bifrostPerm : Blocks.bedrock;
-        for (int x = 0; x < 5; x++) {
-            for (int z = 0; z < 5; z++) {
-                server.setBlock((int) stats.coordsTeleportedFromX - 2 + x, 0, (int) stats.coordsTeleportedFromZ - 2 + z, target);
+        for (int x = -2; x <= 2; x++) {
+            for (int z = -2; z <= 2; z++) {
+                server.setBlock(centerX + x, 0, centerZ + z, target);
             }
         }
 

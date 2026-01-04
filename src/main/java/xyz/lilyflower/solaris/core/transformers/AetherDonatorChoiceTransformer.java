@@ -1,7 +1,6 @@
 package xyz.lilyflower.solaris.core.transformers;
 
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 
@@ -13,9 +12,7 @@ public class AetherDonatorChoiceTransformer implements SolarisClassTransformer {
     }
 
     void isDonator(TargetData data) {
-        InsnList list = new InsnList();
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new InsnNode(Opcodes.IRETURN));
-        data.method().instructions.insert(list);
+        data.method().instructions.insert(new InsnNode(Opcodes.IRETURN));
+        data.method().instructions.insert(new InsnNode(Opcodes.ICONST_1));
     }
 }

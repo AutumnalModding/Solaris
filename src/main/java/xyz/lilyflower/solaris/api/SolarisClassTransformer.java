@@ -9,4 +9,5 @@ public interface SolarisClassTransformer {
     record TargetData(ClassNode node, MethodNode method) {}
 
     String internal$transformerTarget();
+
 }

@@ -13,6 +13,7 @@ public final class SolarisVanilla implements ConfigurationModule {
     public static ArrayList<String> NO_IFRAME_DAMAGETYPES;
     public static boolean DISABLE_WORLDGEN_SPAWNING = false;
     public static boolean DISABLE_SNOW_UPDATES = false;
+    public static int END_PORTAL_TARGET = 1;
 
     public static final Consumer<Configuration> COMBAT_TWEAKS = configuration -> {
         NO_IFRAME_DAMAGETYPES = new ArrayList<>(Arrays.asList(configuration.getStringList("noImmunityDamageTypes", "vanilla.damage", new String[]{},
@@ -27,7 +28,12 @@ public final class SolarisVanilla implements ConfigurationModule {
         DISABLE_WORLDGEN_SPAWNING = configuration.getBoolean("disableWorldgenSpawning", "bandaid", false, "Disables animals spawning during worldgen.\nCan fix 'this.entitiesByUuid is null' crashes during world creation.");
     };
 
+    public static final Consumer<Configuration> MISC_TWEAKS = configuration -> {
+        END_PORTAL_TARGET = configuration.getInt("endPortalTarget", "vanilla.misc", 1, Integer.MIN_VALUE, Integer.MAX_VALUE, "Target for End Portal blocks to send you to when exiting the End.");
+    };
+
     public void init() {
+        SolarisConfigurationLoader.add("solaris", MISC_TWEAKS);
         SolarisConfigurationLoader.add("solaris", COMBAT_TWEAKS);
         SolarisConfigurationLoader.add("solaris", BANDAID_FIXES);
     }

@@ -16,6 +16,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import java.security.ProtectionDomain;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -38,61 +39,39 @@ public class SolarisTransformer implements ClassFileTransformer {
     private static final HashMap<String, Class<? extends SolarisClassTransformer>> TRANSFORMERS = new HashMap<>();
 
     @Override
-    @SuppressWarnings("deprecation") // 'since java 9' yeah good thing this is java 8 then
     public byte[] transform(ClassLoader loader, String name, Class<?> clazz, ProtectionDomain domain, byte[] bytes) {
         ClassNode node = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         reader.accept(node, 0);
+        if ((node.access & Opcodes.ACC_INTERFACE) != 0) return bytes;
 
         name = reader.getClassName();
-        if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Class: {}", name);
+        if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Class: {}", name.replaceAll("/", "∕"));
+
         if (TRANSFORMERS.containsKey(name)) {
-            try {
-                boolean modified = false;
-                Class<? extends SolarisClassTransformer> transformer = TRANSFORMERS.get(name);
-                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  Transformer: {}", transformer.getSimpleName());
-                SolarisClassTransformer instance = transformer.newInstance();
-                ArrayList<String> methods = new ArrayList<>();
-                Arrays.stream(transformer.getDeclaredMethods()).iterator().forEachRemaining(method -> methods.add(method.getName()));
+            bytes = transform(name, node, writer, bytes, loader, domain, clazz);
+            node = new ClassNode();
+            reader = new ClassReader(bytes);
+            writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            reader.accept(node, 0);
+        }
 
-                boolean metadata = false;
-                if (methods.contains("solaris$metadata")) {
-                    metadata = invoke(transformer, instance, node, null);
-                    modified |= metadata;
-                }
+        if (TRANSFORMERS.containsKey(node.superName)) {
+            bytes = transform(node.superName, node, writer, bytes, loader, domain, clazz);
+            node = new ClassNode();
+            reader = new ClassReader(bytes);
+            writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            reader.accept(node, 0);
+        }
 
-                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Metadata", (metadata ? "X" : " "));
-
-                for (MethodNode method : node.methods) {
-                    boolean transformed = false; // i.e. solaris$init or solaris$clinit
-                    if (methods.contains(method.name.replaceAll("<", "solaris\\$").replaceAll(">", ""))) {
-                        transformed = invoke(transformer, instance, node, method);
-                        modified |= transformed;
-                    }
-
-                    if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] {}", (transformed ? "X" : " "), method.name);
-                }
-
-                if (modified) {
-                    node.accept(writer);
-                    bytes = writer.toByteArray();
-                }
-
-                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Modified", (modified ? "X" : " "));
-            } catch (Throwable exception) { // this is bad practice but fuck it, do it anyway
-                if (exception instanceof NoClassDefFoundError error && !CASCADING) {
-                    CASCADING = true;
-                    String target = error.getMessage().replaceAll("/", ".");
-                    try {
-                        SolarisBootstrap.LOGGER.warn("Warning: Attempting to cascade class: {}", target);
-                        LOADER.loadClass(target);
-                        CASCADING = false;
-                        SolarisBootstrap.LOGGER.warn("WARNING: RETRANSFORMING CLASS {}!", name);
-                        bytes = transform(loader, name, clazz, domain, bytes);
-                    } catch (ClassNotFoundException ignored) {}
-                }
-                LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED TRANSFORMING CLASS: " + name, exception);
+        for (String iface : node.interfaces) {
+            if (TRANSFORMERS.containsKey(iface)) {
+                bytes = transform(iface, node, writer, bytes, loader, domain, clazz);
+                node = new ClassNode();
+                reader = new ClassReader(bytes);
+                writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+                reader.accept(node, 0);
             }
         }
 
@@ -104,6 +83,68 @@ public class SolarisTransformer implements ClassFileTransformer {
                 LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED DUMPING CLASS: " + name, exception);
             }
         }
+
+        return bytes;
+    }
+
+    @SuppressWarnings("deprecation") // 'since java 9' yeah good thing this is java 8 then
+    private byte[] transform(String name, ClassNode node, ClassWriter writer, byte[] bytes, ClassLoader loader, ProtectionDomain domain, Class<?> clazz) {
+        try {
+            boolean modified = false;
+            Class<? extends SolarisClassTransformer> transformer = TRANSFORMERS.get(name);
+            if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  Transformer: {}", transformer.getSimpleName());
+            SolarisClassTransformer instance = transformer.newInstance();
+            ArrayList<String> methods = new ArrayList<>();
+            Arrays.stream(transformer.getDeclaredMethods()).iterator().forEachRemaining(method -> methods.add(method.getName()));
+
+            boolean metadata = false;
+            if (methods.contains("solaris$metadata")) {
+                metadata = invoke(transformer, instance, node, null);
+                modified |= metadata;
+            }
+
+            if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Metadata", (metadata ? "X" : " "));
+
+            for (MethodNode method : node.methods) {
+                boolean transformed = false; // i.e. solaris$init or solaris$clinit
+                if (methods.contains(method.name.replaceAll("<", "solaris\\$").replaceAll(">", "")) && (method.access & Opcodes.ACC_ABSTRACT) == 0) {
+                    transformed = invoke(transformer, instance, node, method);
+                    modified |= transformed;
+                }
+
+                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] {}", (transformed ? "X" : " "), method.name);
+            }
+
+            if (modified) {
+                node.accept(writer);
+                bytes = writer.toByteArray();
+            }
+
+            if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Modified", (modified ? "X" : " "));
+        } catch (Throwable exception) { // this is bad practice but fuck it
+            if (exception instanceof NoClassDefFoundError error && !CASCADING) {
+                CASCADING = true;
+                String target = error.getMessage().replaceAll("/", ".");
+                bytes = retransform(target, name, loader, clazz, domain, bytes);
+            } else if (exception instanceof RuntimeException runtime && runtime.getMessage().contains("ClassNotFoundException") && !CASCADING) {
+                CASCADING = true;
+                String target = runtime.getMessage().replaceAll("/", ".");
+                bytes = retransform(target, name, loader, clazz, domain, bytes);
+            }
+            LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED TRANSFORMING CLASS: " + name, exception);
+        }
+
+        return bytes;
+    }
+
+    private byte[] retransform(String target, String name, ClassLoader loader, Class<?> clazz, ProtectionDomain domain, byte[] bytes) {
+        try {
+            SolarisBootstrap.LOGGER.warn("Warning: Attempting to cascade class: {}", target);
+            LOADER.loadClass(target);
+            CASCADING = false;
+            SolarisBootstrap.LOGGER.warn("WARNING: RETRANSFORMING CLASS {}!", name);
+            bytes = transform(loader, name, clazz, domain, bytes);
+        } catch (ClassNotFoundException ignored) {}
 
         return bytes;
     }

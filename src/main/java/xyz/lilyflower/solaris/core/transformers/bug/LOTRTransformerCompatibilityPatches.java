@@ -9,21 +9,13 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 @SuppressWarnings("unused")
 public class LOTRTransformerCompatibilityPatches implements SolarisClassTransformer {
     void patchBlockFire(TargetData data) {
-        InsnList instructions = new InsnList();
-
-        instructions.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        instructions.add(new InsnNode(Opcodes.ARETURN));
-
-        data.method().instructions.insert(instructions);
+        data.method().instructions.insert(new InsnNode(Opcodes.ARETURN));
+        data.method().instructions.insert(new VarInsnNode(Opcodes.ALOAD, 2));
     }
 
     void patchSpawnerAnimals(TargetData data) {
-        InsnList instructions = new InsnList();
-
-        instructions.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        instructions.add(new InsnNode(Opcodes.ARETURN));
-
-        data.method().instructions.insert(instructions);
+        data.method().instructions.insert(new InsnNode(Opcodes.ARETURN));
+        data.method().instructions.insert(new VarInsnNode(Opcodes.ALOAD, 2));
     }
 
     @Override
