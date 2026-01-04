@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.InsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.NevermineTransformerSettings;
 
+@SuppressWarnings("unused")
 public class EntityHunterTransformer implements SolarisClassTransformer {
     void getLevReq(TargetData data) {
         if (NevermineTransformerSettings.DISABLE_HUNTER_REQUIREMENTS) {

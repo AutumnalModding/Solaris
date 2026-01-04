@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.NevermineTransformerSettings;
 
+@SuppressWarnings("unused")
 public class EntityNoExplosionsTransformer implements SolarisClassTransformer {
     void func_70097_a(TargetData data) {
         if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_EXPLOSIONS) {
