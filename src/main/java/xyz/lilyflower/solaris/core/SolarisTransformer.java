@@ -42,36 +42,27 @@ public class SolarisTransformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String name, Class<?> clazz, ProtectionDomain domain, byte[] bytes) {
         ClassNode node = new ClassNode();
         ClassReader reader = new ClassReader(bytes);
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         reader.accept(node, 0);
-        if ((node.access & Opcodes.ACC_INTERFACE) != 0) return bytes;
-
         name = reader.getClassName();
+
+        if ((node.access & Opcodes.ACC_INTERFACE) != 0) return bytes;
         if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Class: {}", name.replaceAll("/", "∕"));
 
         if (TRANSFORMERS.containsKey(name)) {
-            bytes = transform(name, node, writer, bytes, loader, domain, clazz);
-            node = new ClassNode();
-            reader = new ClassReader(bytes);
-            writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            reader.accept(node, 0);
+            SolarisBootstrap.LOGGER.debug("Transforming {} with transformer {} directly", name, TRANSFORMERS.get(name).getSimpleName());
+            bytes = transform(name, bytes);
         }
 
         if (TRANSFORMERS.containsKey(node.superName)) {
-            bytes = transform(node.superName, node, writer, bytes, loader, domain, clazz);
-            node = new ClassNode();
-            reader = new ClassReader(bytes);
-            writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            reader.accept(node, 0);
+            SolarisBootstrap.LOGGER.debug("Transforming {} via superclass {} with transformer {}", name, node.superName, TRANSFORMERS.get(node.superName).getSimpleName());
+            bytes = transform(node.superName, bytes);
         }
 
-        for (String iface : node.interfaces) {
+        List<String> interfaces = new ArrayList<>(node.interfaces);
+        for (String iface : interfaces) {
             if (TRANSFORMERS.containsKey(iface)) {
-                bytes = transform(iface, node, writer, bytes, loader, domain, clazz);
-                node = new ClassNode();
-                reader = new ClassReader(bytes);
-                writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-                reader.accept(node, 0);
+                SolarisBootstrap.LOGGER.debug("Transforming {} via interface {} with transformer {}", name, iface, TRANSFORMERS.get(iface).getSimpleName());
+                bytes = transform(iface, bytes);
             }
         }
 
@@ -88,48 +79,35 @@ public class SolarisTransformer implements ClassFileTransformer {
     }
 
     @SuppressWarnings("deprecation") // 'since java 9' yeah good thing this is java 8 then
-    private byte[] transform(String name, ClassNode node, ClassWriter writer, byte[] bytes, ClassLoader loader, ProtectionDomain domain, Class<?> clazz) {
+    private byte[] transform(String name, byte[] bytes) {
         try {
+            ClassNode node = new ClassNode();
+            ClassReader reader = new ClassReader(bytes);
+            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+            reader.accept(node, 0);
+            
             boolean modified = false;
             Class<? extends SolarisClassTransformer> transformer = TRANSFORMERS.get(name);
-            if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  Transformer: {}", transformer.getSimpleName());
             SolarisClassTransformer instance = transformer.newInstance();
             ArrayList<String> methods = new ArrayList<>();
             Arrays.stream(transformer.getDeclaredMethods()).iterator().forEachRemaining(method -> methods.add(method.getName()));
 
-            boolean metadata = false;
-            if (methods.contains("solaris$metadata")) {
-                metadata = invoke(transformer, instance, node, null);
-                modified |= metadata;
-            }
-
-            if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Metadata", (metadata ? "X" : " "));
-
-            for (MethodNode method : node.methods) {
-                boolean transformed = false; // i.e. solaris$init or solaris$clinit
-                if (methods.contains(method.name.replaceAll("<", "solaris\\$").replaceAll(">", "")) && (method.access & Opcodes.ACC_ABSTRACT) == 0) {
-                    transformed = invoke(transformer, instance, node, method);
-                    modified |= transformed;
-                }
-
-                if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] {}", (transformed ? "X" : " "), method.name);
-            }
+            if (methods.contains("solaris$metadata")) modified |= invoke(transformer, instance, node, null); // Woe, long ass line upon ye. I don't -need- to do it this way but it's Funny lmao
+            for (MethodNode method : node.methods) if (methods.contains(method.name.replaceAll("<", "solaris\\$").replaceAll(">", "")) && (method.access & Opcodes.ACC_ABSTRACT) == 0) modified |= invoke(transformer, instance, node, method);
 
             if (modified) {
                 node.accept(writer);
                 bytes = writer.toByteArray();
             }
-
-            if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("  [{}] Modified", (modified ? "X" : " "));
         } catch (Throwable exception) { // this is bad practice but fuck it
             if (exception instanceof NoClassDefFoundError error && !CASCADING) {
                 CASCADING = true;
                 String target = error.getMessage().replaceAll("/", ".");
-                bytes = retransform(target, name, loader, clazz, domain, bytes);
+                bytes = retransform(target, name, bytes);
             } else if (exception instanceof RuntimeException runtime && runtime.getMessage().contains("ClassNotFoundException") && !CASCADING) {
                 CASCADING = true;
                 String target = runtime.getMessage().replaceAll("/", ".");
-                bytes = retransform(target, name, loader, clazz, domain, bytes);
+                bytes = retransform(target, name, bytes);
             }
             LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED TRANSFORMING CLASS: " + name, exception);
         }
@@ -137,13 +115,13 @@ public class SolarisTransformer implements ClassFileTransformer {
         return bytes;
     }
 
-    private byte[] retransform(String target, String name, ClassLoader loader, Class<?> clazz, ProtectionDomain domain, byte[] bytes) {
+    private byte[] retransform(String target, String name, byte[] bytes) {
         try {
             SolarisBootstrap.LOGGER.warn("Warning: Attempting to cascade class: {}", target);
             LOADER.loadClass(target);
             CASCADING = false;
             SolarisBootstrap.LOGGER.warn("WARNING: RETRANSFORMING CLASS {}!", name);
-            bytes = transform(loader, name, clazz, domain, bytes);
+            bytes = transform(name, bytes);
         } catch (ClassNotFoundException ignored) {}
 
         return bytes;
@@ -169,7 +147,7 @@ public class SolarisTransformer implements ClassFileTransformer {
 
     private static boolean invoke(Class<? extends SolarisClassTransformer> transformer, SolarisClassTransformer instance, ClassNode clazz, @Nullable MethodNode method) {
         try {
-            Method patcher = transformer.getDeclaredMethod(method == null ? "metadata" : method.name, SolarisClassTransformer.TargetData.class);
+            Method patcher = transformer.getDeclaredMethod(method == null ? "solaris$metadata" : method.name, method == null ? ClassNode.class : SolarisClassTransformer.TargetData.class);
             patcher.setAccessible(true);
 
             Integer hash = null;
@@ -180,7 +158,7 @@ public class SolarisTransformer implements ClassFileTransformer {
                 node = compute(clazz);
             }
 
-            patcher.invoke(instance, new SolarisClassTransformer.TargetData(clazz, method));
+            patcher.invoke(instance, method != null ? new SolarisClassTransformer.TargetData(clazz, method) : clazz);
             if (hash != null) {
                 return hash != compute(method.instructions);
             } else {
@@ -224,6 +202,7 @@ public class SolarisTransformer implements ClassFileTransformer {
         hash = 31 * hash + node.name.hashCode();
         hash = 31 * hash + (node.superName != null ? node.superName.hashCode() : 0);
         hash = 31 * hash + node.interfaces.hashCode();
+        hash = 31 * hash + node.interfaces.size();
         hash = 31 * hash + node.methods.size();
         hash = 31 * hash + node.fields.size();
         return hash;

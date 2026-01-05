@@ -1,6 +1,7 @@
 package xyz.lilyflower.solaris.core.transformers.nevermine;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -22,6 +23,10 @@ public class EntityNoMeleeTransformer implements SolarisClassTransformer {
 
             data.method().instructions.insert(list);
         }
+    }
+
+    void solaris$metadata(ClassNode node) {
+        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_MELEE) node.interfaces.remove(this.internal$transformerTarget());
     }
 
     @Override public String internal$transformerTarget() {

@@ -1,5 +1,6 @@
 package xyz.lilyflower.solaris.api;
 
+import cpw.mods.fml.common.Loader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -27,45 +28,44 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
     HashMap<String, CelestialBody> CACHE = new HashMap<>();
 
     static Moon CreateMoon(
-            Planet owner, String name,
-            int tier, int dimension,
+            Planet owner,
+            String name, int dimension,
             float orbit, float distance,
             float shift, float size,
             ResourceLocation icon,
             Class<? extends WorldProvider> provider,
             IAtmosphericGas... atmosphere
     ) {
-        return (Moon) CreateBody(new SolarisExtensions.TriPair<>(null, null, owner), name, tier, dimension, orbit, distance, shift, size, Moon.class, icon, provider, atmosphere);
+        return (Moon) CreateBody(new SolarisExtensions.TriPair<>(null, null, owner), name, dimension, orbit, distance, shift, size, Moon.class, icon, provider, atmosphere);
     }
 
     static Planet CreatePlanet(
-            SolarSystem system, String name,
-            int tier, int dimension,
+            SolarSystem system,
+            String name, int dimension,
             float orbit, float distance,
             float shift, float size,
             ResourceLocation icon,
             Class<? extends WorldProvider> provider,
             IAtmosphericGas... atmosphere
     ) {
-        return (Planet) CreateBody(new SolarisExtensions.TriPair<>(null, system, null), name, tier, dimension, orbit, distance, shift, size, Planet.class, icon, provider, atmosphere);
+        return (Planet) CreateBody(new SolarisExtensions.TriPair<>(null, system, null), name, dimension, orbit, distance, shift, size, Planet.class, icon, provider, atmosphere);
     }
 
     static Star CreateStar(
-            SolarSystem system, String name,
-            int tier, int dimension,
+            SolarSystem system,
+            String name, int dimension,
             float orbit, float distance,
             float shift, float size,
             ResourceLocation icon,
             Class<? extends WorldProvider> provider,
             IAtmosphericGas... atmosphere
     ) {
-        return (Star) CreateBody(new SolarisExtensions.TriPair<>(system, null, null), name, tier, dimension, orbit, distance, shift, size, Star.class, icon, provider, atmosphere);
+        return (Star) CreateBody(new SolarisExtensions.TriPair<>(system, null, null), name, dimension, orbit, distance, shift, size, Star.class, icon, provider, atmosphere);
     }
 
     static CelestialBody CreateBody(
             SolarisExtensions.TriPair<SolarSystem, SolarSystem, Planet> owner,
-            String name,
-            int tier, int dimension,
+            String name, int dimension,
             float orbit, float distance,
             float shift, float size,
             Class<? extends CelestialBody> clazz,
@@ -87,7 +87,6 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
 
             body = body.setBodyIcon(icon)
                     .setPhaseShift(shift)
-                    .setTierRequired(tier)
                     .setRelativeSize(size)
                     .setRelativeOrbitTime(orbit)
                     .setDimensionInfo(dimension, provider)
@@ -104,6 +103,24 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
         }
 
         return CACHE.get(name);
+    }
+
+    static int CalculateAdvancedTier(int target) {
+        int max = 3;
+        if (Loader.isModLoaded("ExtraPlanets") || Loader.isModLoaded("MorePlanet")) max = 10;
+        if (Loader.isModLoaded("GalaxySpace")) max = 6;
+
+        if (target > max) {
+            if (max == 3) Solaris.LOGGER.warn("Invalid rocket tier {}, no supported addon available - falling back to 3; try installing More Planets, Extra Planets, or Galaxy Space.", target);
+            if (max == 6) Solaris.LOGGER.warn("Invalid rocket tier {}, neither Extra Planets nor More Planets are available - falling back to GalaxySpace max of 6.", target);
+            if (max == 10) Solaris.LOGGER.warn("Invalid rocket tier {}. Do any mods even exist that provide this high a tier...?", target);
+        }
+
+        return Math.max(target, max);
+    }
+
+    static ResourceLocation GCBodyIcon(String icon) {
+        return new ResourceLocation("galacticraftcore", "textures/gui/celestialbodies/" + icon + ".png");
     }
 
     @Override default float getGravity() { return 0.0F; }
@@ -124,8 +141,9 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
     default ResourceLocation rocketLaunchVisual() { return new ResourceLocation("galacticrafttcore", "textures/gui/overworldRocketGui.png"); }
 
     @SuppressWarnings("unchecked")
-    default void register() {
+    default void register(int tier) {
         CelestialBody body = this.getCelestialBody();
+        body.setTierRequired(CalculateAdvancedTier(tier));
         switch (body.getClass().getSimpleName()) { // this fucking sucks actually
             case "Star" -> StarRegistry.STARS.add((Star) body);
             case "Moon" -> GalaxyRegistry.registerMoon((Moon) body);
@@ -133,6 +151,7 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
         }
 
         GalacticraftRegistry.registerTeleportType((Class<? extends WorldProvider>) this.getClass(), this.entryMethod());
+        GalacticraftRegistry.registerTeleportType((Class<? extends WorldProvider>) this.getClass().getSuperclass(), this.entryMethod());
         GalacticraftRegistry.registerRocketGui((Class<? extends WorldProvider>) this.getClass(), this.rocketLaunchVisual());
     }
 }

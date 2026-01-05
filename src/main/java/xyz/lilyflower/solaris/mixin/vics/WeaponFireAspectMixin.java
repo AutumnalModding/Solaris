@@ -12,7 +12,7 @@ import xyz.lilyflower.solaris.configuration.modules.SolarisMW;
 
 @Mixin(WeaponFireAspect.class)
 public class WeaponFireAspectMixin {
-    @Shadow private static Predicate<PlayerWeaponInstance> sprinting;
+    @Shadow(remap = false) private static Predicate<PlayerWeaponInstance> sprinting;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void allowSprintFiring(CallbackInfo ci) {

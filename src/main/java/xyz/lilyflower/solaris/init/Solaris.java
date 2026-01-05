@@ -18,7 +18,6 @@ import java.util.List;
 import lotr.common.LOTRMod;
 import lotr.common.LOTRTime;
 import net.aetherteam.aether.items.consumables.ItemContinuum;
-import net.aetherteam.aether.recipes.AetherRecipes;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,7 +29,6 @@ import xyz.lilyflower.solaris.api.ConfigurationModule;
 import xyz.lilyflower.solaris.api.LoadStage;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
 import xyz.lilyflower.solaris.configuration.modules.SolarisAether;
-import xyz.lilyflower.solaris.configuration.modules.SolarisContent;
 import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
 import xyz.lilyflower.solaris.configuration.modules.SolarisLOTR;
 import xyz.lilyflower.solaris.content.SolarisRegistry;
@@ -38,7 +36,6 @@ import xyz.lilyflower.solaris.command.LTRDebuggerCommand;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.integration.galacticraft.PlanetRegistrationHook;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
-import xyz.lilyflower.solaris.internal.illumos.PlanetSetup;
 import xyz.lilyflower.solaris.util.ClasspathScanning;
 
 @Mod(modid = Solaris.MODID, version = Solaris.VERSION, dependencies = "before:GalacticraftCore;after:lotr")
@@ -94,7 +91,6 @@ public class Solaris {
 
         SolarisRegistry.initialize();
         if (Loader.isModLoaded("GalacticraftCore")) {
-            SolarisIntegrationModule.add(new PlanetSetup(), SolarisContent.MODPACK_IDENTIFIER.equals("illumos"));
             SolarisIntegrationModule.add(new PlanetRegistrationHook(), !SolarisGalacticraft.MODDED_PLANET_INTEGRATION.isEmpty());
         }
         SolarisIntegrationModule.execute();

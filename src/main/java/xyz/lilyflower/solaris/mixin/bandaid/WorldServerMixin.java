@@ -19,11 +19,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WorldServerMixin {
     @Shadow private IntHashMap entityIdMap;
 
-    @Inject(method = "onEntityAdded", at = @At("HEAD"))
-    public void fixNullMap(Entity entity, CallbackInfo ci) {
+    @Inject(method = "onEntityAdded", at = @At("HEAD"), cancellable = true)
+    public void fixNulls(Entity entity, CallbackInfo info) {
         if (this.entityIdMap == null) {
             this.entityIdMap = new IntHashMap();
         }
+        if (entity == null) info.cancel();
     }
 
     /**
@@ -31,9 +32,9 @@ public class WorldServerMixin {
      * @reason fix IAE
      */
     @Overwrite
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "DataFlowIssue"})
     public BiomeGenBase.SpawnListEntry spawnRandomCreature(EnumCreatureType type, int x, int y, int z) {
-        WorldServer server = (WorldServer) (Object) this;
+        WorldServer server = (WorldServer) (Object) this; // TODO: does this REALLY have to be an @Overwrite?
         List<BiomeGenBase.SpawnListEntry> list = (List<BiomeGenBase.SpawnListEntry>) server.getChunkProvider().getPossibleCreatures(type, x, y, z);
         list = ForgeEventFactory.getPotentialSpawns(server, type, x, y, z, list);
         try { return list != null && !list.isEmpty() ? (BiomeGenBase.SpawnListEntry) WeightedRandom.getRandomItem(server.rand, list) : null; }

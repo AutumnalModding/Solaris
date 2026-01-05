@@ -2,6 +2,7 @@ package xyz.lilyflower.solaris.mixin.quiverbow;
 
 import com.domochevsky.quiverbow.net.NetHelper;
 import com.domochevsky.quiverbow.projectiles.SoulShot;
+import com.domochevsky.quiverbow.weapons.SoulCairn;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -58,29 +59,45 @@ public class SoulShotMixin {
                     .findFirst();
 
             ItemStack stack = logic.isPresent() ? logic.get().egg(living.getClass()) : new ItemStack(Items.spawn_egg, 1, EntityList.getEntityID(living));
-            if (stack.getDisplayName().equals("Spawn")) {
-                stack = new ItemStack(Items.diamond);
-                stack.setStackDisplayName("Invalid Spawn Egg Diamond Refund - Sorry! :(");
+
+            try {
+                if (stack.getDisplayName().equals("Spawn")) {
+                    stack = null;
+                } else {
+                    entity.setDead();
+                }
+            } catch (Throwable throwable) {
+                stack = null;
+            }
+
+            if (stack == null) {
                 if (shot.shootingEntity instanceof EntityPlayerMP player) {
                     SolarisMessageHelper.messageBoldColoured(player, "solaris.invalid_spawn_egg.1", EnumChatFormatting.RED);
                     SolarisMessageHelper.messageBoldColoured(player, "solaris.invalid_spawn_egg.2", EnumChatFormatting.RED);
                     SolarisMessageHelper.messageBoldColoured(player, "solaris.invalid_spawn_egg.3", EnumChatFormatting.RED);
                     SolarisMessageHelper.messageBoldColoured(player, "solaris.invalid_spawn_egg.4", EnumChatFormatting.RED);
+
+                    ItemStack held = player.getHeldItem();
+                    if (held.getItem() instanceof SoulCairn) {
+                        held.setItemDamage(0);
+                        shot.setDead();
+                    }
                 }
-            } else {
-                entity.setDead();
+                return;
             }
 
-            EntityItem dropped = new EntityItem(shot.worldObj,
-                    shot.shootingEntity == null ? shot.posX : shot.shootingEntity.posX,
-                    shot.shootingEntity == null ? shot.posY : shot.shootingEntity.posY,
-                    shot.shootingEntity == null ? shot.posZ : shot.shootingEntity.posZ,
-            stack);
+            try {
+                EntityItem dropped = new EntityItem(shot.worldObj,
+                        shot.shootingEntity == null ? shot.posX : shot.shootingEntity.posX,
+                        shot.shootingEntity == null ? shot.posY : shot.shootingEntity.posY,
+                        shot.shootingEntity == null ? shot.posZ : shot.shootingEntity.posZ,
+                        stack);
 
-            dropped.delayBeforeCanPickup = 10;
-            shot.worldObj.spawnEntityInWorld(dropped);
-            NetHelper.sendParticleMessageToAllPlayers(shot.worldObj, shot.getEntityId(), (byte) 11, (byte) 4);
-            shot.setDead();
+                dropped.delayBeforeCanPickup = 10;
+                shot.worldObj.spawnEntityInWorld(dropped);
+                NetHelper.sendParticleMessageToAllPlayers(shot.worldObj, shot.getEntityId(), (byte) 11, (byte) 4);
+                shot.setDead();
+            } catch (NullPointerException ignored) {}
         }
     }
 
@@ -89,5 +106,8 @@ public class SoulShotMixin {
         solaris$logic.put("lotr.common.entity", new EggLogic.GenericEggLogic("lotr", "item.spawnEgg"));
         solaris$logic.put("twilightforest.entity", new EggLogic.GenericEggLogic("TwilightForest", "item.tfspawnegg"));
         solaris$logic.put("com.gildedgames.the_aether.entities", new EggLogic.GenericEggLogic("aether_legacy", "aether_spawn_egg"));
+        solaris$logic.put("net.aetherteam.aether.entities", new EggLogic.GenericEggLogic("aether", "spawnEgg"));
+        solaris$logic.put("com.kentington.thaumichorizons.common.entities", new EggLogic.GenericEggLogic("ThaumicHorizons", "spawnerEgg"));
+        solaris$logic.put("thaumcraft.common.entities", new EggLogic.GenericEggLogic("Thaumcraft", "ItemSpawnerEgg"));
     }
 }

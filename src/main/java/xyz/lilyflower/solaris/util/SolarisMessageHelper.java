@@ -5,6 +5,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 
+@SuppressWarnings("unused")
 public class SolarisMessageHelper {
     public static void message(EntityPlayer player, String key, boolean bold, boolean italic, boolean strikethrough, boolean underline, boolean obfuscated, EnumChatFormatting colour) {
         ChatComponentTranslation message = new ChatComponentTranslation(key);

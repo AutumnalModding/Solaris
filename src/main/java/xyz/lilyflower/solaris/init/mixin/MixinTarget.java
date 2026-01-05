@@ -16,7 +16,11 @@ public enum MixinTarget {
     LOTR("The Lord of the Rings Mod", "LOTRMod", true),
     RPLE("Right Proper Lighting Engine", "rple", false),
     OPENCOMPUTERS("OpenComputers", "OpenComputers", false),
-    ADVANCED_ROCKETRY("Advanced Rocketry", "AdvancedRocketry", true);
+    ADVANCED_ROCKETRY("Advanced Rocketry", "AdvancedRocketry", true),
+    AOA("Advent of Ascension", "Nevermine-Tslat", true),
+    NTM("HBM-NTM-", "HBM's Nuclear Tech Mod", true)
+
+    ;
 
     public final String name;
     public final String prefix;
