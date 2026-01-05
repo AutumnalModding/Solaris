@@ -12,11 +12,11 @@ public class PlanetProviderLOTR extends LOTRWorldProviderMiddleEarth implements 
     @Override
     public CelestialBody getCelestialBody() {
         return PlanetProvider.CreatePlanet(
-                PlanetRegistrationHook.PRIMARY_SYSTEM,
+                PlanetRegistrationHook.ALPHA,
                 "lotr",
                 32765,
                 2F,
-                PlanetRegistrationHook.PRIMARY_SYSTEM == GalacticraftCore.solarSystemSol ? 3.8F : 1F,
+                PlanetRegistrationHook.ALPHA == GalacticraftCore.solarSystemSol ? 3.8F : 1F,
                 1.0F,
                 1.45F,
                 PlanetProvider.GCBodyIcon("earth"),

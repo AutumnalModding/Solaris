@@ -19,9 +19,10 @@ item.solaris.mithril_robe_boots.name=Mithril-trimmed Thaumaturge's Boots
 
 item.solaris.dust_stone.name=Stone Dust
 
-solaris.invalid_spawn_egg.1=Sorry! It seems this mob isn't yet supported.
-solaris.invalid_spawn_egg.2=Here's your diamond back - open an issue at:
+solaris.invalid_spawn_egg.1=Sorry! It seems this mob isn't yet supported by the Soul Cairn.
+solaris.invalid_spawn_egg.2=Here's your diamond back - open an issue on the Github at:
 solaris.invalid_spawn_egg.3=https://github.com/AutumnalModding/Solaris/issues
-solaris.invalid_spawn_egg.4=(Make sure to specify what mod has this issue!)
+solaris.invalid_spawn_egg.4=(Make sure to specify what mod & entity has this issue!)
 
-fluid.primalmana=Primal Mana
+solarsystem.solaris$beta=Solaris Beta
+solarsystem.solaris$alpha=Solaris Alpha

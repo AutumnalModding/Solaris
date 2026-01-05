@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import net.minecraftforge.common.config.Configuration;
 import xyz.lilyflower.solaris.api.ConfigurationModule;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
+import xyz.lilyflower.solaris.init.Solaris;
 
 @SuppressWarnings("unused")
 public final class SolarisVanilla implements ConfigurationModule {
@@ -14,6 +15,7 @@ public final class SolarisVanilla implements ConfigurationModule {
     public static boolean DISABLE_WORLDGEN_SPAWNING = false;
     public static boolean DISABLE_SNOW_UPDATES = false;
     public static int END_PORTAL_TARGET = 1;
+    public static ArrayList<Integer> NEVER_UNLOAD = new ArrayList<>();
 
     public static final Consumer<Configuration> COMBAT_TWEAKS = configuration -> {
         NO_IFRAME_DAMAGETYPES = new ArrayList<>(Arrays.asList(configuration.getStringList("noImmunityDamageTypes", "vanilla.damage", new String[]{},
@@ -26,6 +28,15 @@ public final class SolarisVanilla implements ConfigurationModule {
     public static final Consumer<Configuration> BANDAID_FIXES = configuration -> {
         DISABLE_SNOW_UPDATES = configuration.getBoolean("disableSnowUpdates", "bandaid", false, "Disables snow sheet blocks from sending neighbour updates.\nCan stop StackOverflowExceptions in some cases.");
         DISABLE_WORLDGEN_SPAWNING = configuration.getBoolean("disableWorldgenSpawning", "bandaid", false, "Disables animals spawning during worldgen.\nCan fix 'this.entitiesByUuid is null' crashes during world creation.");
+        String[] list = configuration.getStringList("neverUnloadDimensions", "bandaid", new String[]{}, "Dimensions to never unload. Probably don't touch this.");
+        for (String dimension : list) {
+            try {
+                int parsed = Integer.parseInt(dimension);
+                NEVER_UNLOAD.add(parsed);
+            } catch (NumberFormatException exception) {
+                Solaris.LOGGER.error("Invalid dimension ID {}!", dimension);
+            }
+        };
     };
 
     public static final Consumer<Configuration> MISC_TWEAKS = configuration -> {

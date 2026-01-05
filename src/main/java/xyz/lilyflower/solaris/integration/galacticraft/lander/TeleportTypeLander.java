@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.integration.galacticraft;
+package xyz.lilyflower.solaris.integration.galacticraft.lander;
 
 import cpw.mods.fml.common.Loader;
 import java.util.Random;

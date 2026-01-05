@@ -7,18 +7,18 @@ import micdoodle8.mods.galacticraft.api.world.ITeleportType;
 import micdoodle8.mods.galacticraft.core.GalacticraftCore;
 import xyz.lilyflower.solaris.api.PlanetProvider;
 import xyz.lilyflower.solaris.integration.galacticraft.PlanetRegistrationHook;
-import xyz.lilyflower.solaris.integration.galacticraft.TeleportTypeBalloons;
+import xyz.lilyflower.solaris.integration.galacticraft.lander.TeleportTypeBalloons;
 
 @SuppressWarnings("unused")
 public class PlanetProviderAtum extends AtumWorldProvider implements PlanetProvider {
     @Override
     public CelestialBody getCelestialBody() {
         return PlanetProvider.CreatePlanet(
-                PlanetRegistrationHook.PRIMARY_SYSTEM,
+                PlanetRegistrationHook.ALPHA,
                 "atum",
                 32766,
                 35F,
-                PlanetRegistrationHook.PRIMARY_SYSTEM == GalacticraftCore.solarSystemSol ? 8F : 1.375F,
+                PlanetRegistrationHook.ALPHA == GalacticraftCore.solarSystemSol ? 8F : 1.375F,
                 1.0F,
                 1.45F,
                 PlanetProvider.GCBodyIcon("saturn"),

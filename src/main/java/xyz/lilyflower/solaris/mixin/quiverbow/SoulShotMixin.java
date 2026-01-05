@@ -104,10 +104,10 @@ public class SoulShotMixin {
     static {
         solaris$logic.put("alfheim.common.entity", new EggLogic.AlfheimEggLogic());
         solaris$logic.put("lotr.common.entity", new EggLogic.GenericEggLogic("lotr", "item.spawnEgg"));
+        solaris$logic.put("net.aetherteam.aether.entities", new EggLogic.GenericEggLogic("aether", "spawnEgg"));
         solaris$logic.put("twilightforest.entity", new EggLogic.GenericEggLogic("TwilightForest", "item.tfspawnegg"));
         solaris$logic.put("com.gildedgames.the_aether.entities", new EggLogic.GenericEggLogic("aether_legacy", "aether_spawn_egg"));
-        solaris$logic.put("net.aetherteam.aether.entities", new EggLogic.GenericEggLogic("aether", "spawnEgg"));
         solaris$logic.put("com.kentington.thaumichorizons.common.entities", new EggLogic.GenericEggLogic("ThaumicHorizons", "spawnerEgg"));
-        solaris$logic.put("thaumcraft.common.entities", new EggLogic.GenericEggLogic("Thaumcraft", "ItemSpawnerEgg"));
+        // solaris$logic.put("thaumcraft.common.entities", new EggLogic.GenericEggLogic("Thaumcraft", "ItemSpawnerEgg")); // Disabled pending bugfixes
     }
 }

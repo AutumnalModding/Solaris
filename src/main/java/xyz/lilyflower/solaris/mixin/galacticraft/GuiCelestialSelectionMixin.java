@@ -2,6 +2,7 @@ package xyz.lilyflower.solaris.mixin.galacticraft;
 
 import micdoodle8.mods.galacticraft.api.galaxies.CelestialBody;
 import micdoodle8.mods.galacticraft.api.galaxies.GalaxyRegistry;
+import micdoodle8.mods.galacticraft.api.galaxies.Planet;
 import micdoodle8.mods.galacticraft.api.galaxies.SolarSystem;
 import micdoodle8.mods.galacticraft.core.client.gui.screen.GuiCelestialSelection;
 import org.lwjgl.util.vector.Vector3f;
@@ -25,7 +26,7 @@ public class GuiCelestialSelectionMixin {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void setMainSolarSystem(CallbackInfo ci) {
-        Solaris.LOGGER.info("Changing Galacticraft selected solar system to {}. If you crash here, it's invalid!", SolarisGalacticraft.MAIN_SOLAR_SYSTEM);
+        Solaris.LOGGER.info("Changing Galacticraft selected solar system to {}. If you crash directly after this line, it's invalid!", SolarisGalacticraft.MAIN_SOLAR_SYSTEM);
         this.selectedParent = solaris$main;
     }
     
@@ -47,6 +48,11 @@ public class GuiCelestialSelectionMixin {
     @Inject(method = "getCelestialBodyPosition", at = @At("HEAD"), cancellable = true)
     public void fixNPE(CelestialBody body, CallbackInfoReturnable<Vector3f> cir) {
         if (body == null) {
+            cir.setReturnValue(new Vector3f());
+        }
+
+        if (body instanceof Planet planet && planet.getParentSolarSystem() == null) {
+            Solaris.LOGGER.warn("Planet '{}' has no parent solar system! Returning empty Vector3 to prevent crash.", planet.getName());
             cir.setReturnValue(new Vector3f());
         }
     }

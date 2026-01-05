@@ -11,9 +11,9 @@ public class SolarisGalacticraft implements ConfigurationModule {
     public static String MAIN_SOLAR_SYSTEM = "sol";
     public static boolean DISABLE_UNREACHABLE_PLANETS = false;
     public static List<String > DISABLED_CELESTIAL_BODIES = new ArrayList<>();
-
     public static List<String> MODDED_PLANET_INTEGRATION = new ArrayList<>();
     public static List<Integer> INTEGRATION_TIERS = new ArrayList<>();
+    public static float ENTRY_POD_SPEED = -2;
 
     @Override
     public void init() {
@@ -22,6 +22,7 @@ public class SolarisGalacticraft implements ConfigurationModule {
             MODDED_PLANET_INTEGRATION = Arrays.asList(configuration.getStringList("additionalModdedPlanets", "galacticraft", new String[]{}, "List of mods to register Galacticraft integration for."));
             MAIN_SOLAR_SYSTEM = configuration.getString("mainSolarSystem", "galacticraft", "sol", "Main solar system. Change this if you disable Sol, or want to set the default galaxy map viewpoint.");
             DISABLED_CELESTIAL_BODIES = Arrays.asList(configuration.getStringList("disabledBodies", "galacticraft", new String[]{}, "List of celestial body IDs to disable."));
+            ENTRY_POD_SPEED = configuration.getFloat("entryPodSpeed", "galacticraft", -2, Float.MIN_VALUE, 0, "Initial entry pod speed.");
             String[] tiers = configuration.getStringList("integrationTiers", "galacticraft", new String[]{}, "Tiers for modded planet integration. Both lists MUST be the same size! Index order matters.");
             for (String tier : tiers) {
                 try {

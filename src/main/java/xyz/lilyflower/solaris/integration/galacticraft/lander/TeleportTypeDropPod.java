@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.integration.galacticraft;
+package xyz.lilyflower.solaris.integration.galacticraft.lander;
 
 import micdoodle8.mods.galacticraft.core.entities.EntityLanderBase;
 import micdoodle8.mods.galacticraft.planets.asteroids.entities.EntityEntryPod;

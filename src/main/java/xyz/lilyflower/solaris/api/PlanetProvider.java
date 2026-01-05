@@ -16,12 +16,13 @@ import micdoodle8.mods.galacticraft.api.world.IExitHeight;
 import micdoodle8.mods.galacticraft.api.world.IGalacticraftWorldProvider;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import micdoodle8.mods.galacticraft.api.world.ITeleportType;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.init.Solaris;
-import xyz.lilyflower.solaris.integration.galacticraft.StarRegistry;
-import xyz.lilyflower.solaris.integration.galacticraft.TeleportTypeLander;
+import xyz.lilyflower.solaris.integration.galacticraft.PlanetRegistrationHook;
+import xyz.lilyflower.solaris.integration.galacticraft.lander.TeleportTypeLander;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 
 public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight, ISolarLevel {
@@ -111,12 +112,12 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
         if (Loader.isModLoaded("GalaxySpace")) max = 6;
 
         if (target > max) {
-            if (max == 3) Solaris.LOGGER.warn("Invalid rocket tier {}, no supported addon available - falling back to 3; try installing More Planets, Extra Planets, or Galaxy Space.", target);
-            if (max == 6) Solaris.LOGGER.warn("Invalid rocket tier {}, neither Extra Planets nor More Planets are available - falling back to GalaxySpace max of 6.", target);
             if (max == 10) Solaris.LOGGER.warn("Invalid rocket tier {}. Do any mods even exist that provide this high a tier...?", target);
+            if (max == 6) Solaris.LOGGER.warn("Invalid rocket tier {}, neither Extra Planets nor More Planets are available - falling back to GalaxySpace max of 6.", target);
+            if (max == 3) Solaris.LOGGER.warn("Invalid rocket tier {}, no supported addon available - falling back to 3; try installing More Planets, Extra Planets, or Galaxy Space.", target);
         }
 
-        return Math.max(target, max);
+        return MathHelper.clamp_int(target, 1, max);
     }
 
     static ResourceLocation GCBodyIcon(String icon) {
@@ -145,7 +146,7 @@ public interface PlanetProvider extends IGalacticraftWorldProvider, IExitHeight,
         CelestialBody body = this.getCelestialBody();
         body.setTierRequired(CalculateAdvancedTier(tier));
         switch (body.getClass().getSimpleName()) { // this fucking sucks actually
-            case "Star" -> StarRegistry.STARS.add((Star) body);
+            case "Star" -> PlanetRegistrationHook.STARS.add((Star) body);
             case "Moon" -> GalaxyRegistry.registerMoon((Moon) body);
             case "Planet" -> GalaxyRegistry.registerPlanet((Planet) body);
         }

@@ -21,6 +21,7 @@
     "bandaid.WorldServerMixin",
     "forge.DimensionManagerMixin",
     "galacticraft.CelestialBodyMixin",
+    "galacticraft.EntityEntryPodMixin",
     "galacticraft.GalacticraftCoreMixin",
     "galacticraft.GalacticraftRegistryClientMixin",
     "galacticraft.GalacticraftRegistryMixin",
