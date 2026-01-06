@@ -5,31 +5,25 @@ import java.util.Arrays;
 import java.util.List;
 import xyz.lilyflower.solaris.api.ConfigurationModule;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
-import xyz.lilyflower.solaris.init.Solaris;
 
 public class SolarisGalacticraft implements ConfigurationModule {
     public static String MAIN_SOLAR_SYSTEM = "sol";
     public static boolean DISABLE_UNREACHABLE_PLANETS = false;
     public static List<String > DISABLED_CELESTIAL_BODIES = new ArrayList<>();
-    public static List<String> MODDED_PLANET_INTEGRATION = new ArrayList<>();
-    public static List<Integer> INTEGRATION_TIERS = new ArrayList<>();
-    public static float ENTRY_POD_SPEED = -2;
+    public static float ENTRY_POD_SPEED = -0.5F;
 
     @Override
     public void init() {
-        SolarisConfigurationLoader.add("GalacticraftCore", configuration -> {
+        SolarisConfigurationLoader.add("GalacticraftCore", "galacticraft", configuration -> {
             DISABLE_UNREACHABLE_PLANETS = configuration.getBoolean("disableUnreachablePlanets", "galacticraft", false, "Disables the creation of unreachable planets. Useful to avoid clutter.");
-            MODDED_PLANET_INTEGRATION = Arrays.asList(configuration.getStringList("additionalModdedPlanets", "galacticraft", new String[]{}, "List of mods to register Galacticraft integration for."));
             MAIN_SOLAR_SYSTEM = configuration.getString("mainSolarSystem", "galacticraft", "sol", "Main solar system. Change this if you disable Sol, or want to set the default galaxy map viewpoint.");
             DISABLED_CELESTIAL_BODIES = Arrays.asList(configuration.getStringList("disabledBodies", "galacticraft", new String[]{}, "List of celestial body IDs to disable."));
-            ENTRY_POD_SPEED = configuration.getFloat("entryPodSpeed", "galacticraft", -2, Float.MIN_VALUE, 0, "Initial entry pod speed.");
-            String[] tiers = configuration.getStringList("integrationTiers", "galacticraft", new String[]{}, "Tiers for modded planet integration. Both lists MUST be the same size! Index order matters.");
-            for (String tier : tiers) {
-                try {
-                    int parsed = Integer.parseInt(tier);
-                    INTEGRATION_TIERS.add(parsed);
-                } catch (NumberFormatException exception) {
-                    Solaris.LOGGER.error("Invalid tier {}!", tier);
+            ENTRY_POD_SPEED = configuration.getFloat("entryPodSpeed", "galacticraft", -0.5F, Float.MIN_VALUE, Float.MAX_VALUE, "Initial entry pod speed.");
+            String[] data = configuration.getStringList("additionalPlanets", "galacticraft", new String[]{}, "List of mods to register Galacticraft integration for.");
+            for (String entry : data) {
+                String[] split = entry.split(":");
+                if (split.length >= 7) {
+
                 }
             }
         });

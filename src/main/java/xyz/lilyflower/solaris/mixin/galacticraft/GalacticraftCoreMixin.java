@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
-import xyz.lilyflower.solaris.integration.galacticraft.PlanetRegistrationHook;
+import xyz.lilyflower.solaris.integration.galacticraft.PlanetParser;
 
 @Mixin(GalacticraftCore.class)
 public class GalacticraftCoreMixin {
@@ -27,11 +27,11 @@ public class GalacticraftCoreMixin {
 
     @Inject(method = "serverStarting", at = @At(value = "INVOKE", target = "Lmicdoodle8/mods/galacticraft/api/galaxies/GalaxyRegistry;getRegisteredMoons()Ljava/util/Map;"), remap = false)
     public void addStars(FMLServerStartingEvent event, CallbackInfo ci, @Local ArrayList<CelestialBody> bodies) {
-        bodies.addAll(PlanetRegistrationHook.STARS);
+        bodies.addAll(PlanetParser.STARS);
     }
 
     @Inject(method = "postInit", at = @At(value = "INVOKE", target = "Lmicdoodle8/mods/galacticraft/api/galaxies/GalaxyRegistry;getRegisteredMoons()Ljava/util/Map;"), remap = false)
     public void addStars(FMLPostInitializationEvent event, CallbackInfo ci, @Local ArrayList<CelestialBody> bodies) {
-        bodies.addAll(PlanetRegistrationHook.STARS);
+        bodies.addAll(PlanetParser.STARS);
     }
 }

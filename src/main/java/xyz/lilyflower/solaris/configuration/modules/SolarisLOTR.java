@@ -117,9 +117,9 @@ public class SolarisLOTR implements ConfigurationModule {
     }
 
     public void init() {
-        SolarisConfigurationLoader.add("lotr", COMBAT_TWEAKS);
-        SolarisConfigurationLoader.add("lotr", GENERIC_TWEAKS);
-        SolarisConfigurationLoader.add("lotr", CROSS_MOD_INTEGRATION);
-        SolarisConfigurationLoader.add("lotr", FAST_TRAVEL_TWEAKS);
+        SolarisConfigurationLoader.add("lotr", "lotr",  COMBAT_TWEAKS);
+        SolarisConfigurationLoader.add("lotr", "lotr", GENERIC_TWEAKS);
+        SolarisConfigurationLoader.add("lotr", "lotr", CROSS_MOD_INTEGRATION);
+        SolarisConfigurationLoader.add("lotr", "lotr", FAST_TRAVEL_TWEAKS);
     }
 }

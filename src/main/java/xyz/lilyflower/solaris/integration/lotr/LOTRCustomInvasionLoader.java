@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util.data.loader.lotr;
+package xyz.lilyflower.solaris.integration.lotr;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraftforge.common.util.EnumHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.lilyflower.solaris.util.data.loader.EnumHelperMappings;
+import xyz.lilyflower.solaris.util.EnumHelperMappings;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
@@ -64,7 +64,7 @@ public class LOTRCustomInvasionLoader implements CustomDataLoader {
                         }
                     }
 
-                    LOTRInvasions invasion = EnumHelper.addEnum(EnumHelperMappings.LOTR_EH_MAPPINGS, LOTRInvasions.class, invasionName, invasionFaction);
+                    LOTRInvasions invasion = EnumHelper.addEnum(EnumHelperMappings.LOTR, LOTRInvasions.class, invasionName, invasionFaction);
 
                     invasionSpawns.forEach(entry -> {
                         String[] split = entry.split(" ");

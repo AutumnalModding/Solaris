@@ -13,9 +13,4 @@ public class EntityEntryPodMixin {
     public void nyoom(CallbackInfoReturnable<Double> cir) {
         cir.setReturnValue((double) SolarisGalacticraft.ENTRY_POD_SPEED);
     }
-
-    @Inject(method = "shouldSpawnParticles", at = @At("HEAD"), cancellable = true)
-    public void zoom(CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(true);
-    }
 }

@@ -106,9 +106,9 @@ public class SolarisBootstrap implements ITweaker {
             }
             LOGGER.info("Scan complete. Loaded {} modules.", count);
 
-            File dir = new File("config/");
-            if (dir.exists() || dir.mkdir()) {
-                SolarisTransformerSettings.load(new File("config/solaris-early.cfg"));
+            File dir = new File("config/solaris/");
+            if (dir.exists() || dir.mkdirs()) {
+                SolarisTransformerSettings.load(new File("config/solaris/early.cfg"));
             }
         }
 

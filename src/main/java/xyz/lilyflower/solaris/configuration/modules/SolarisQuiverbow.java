@@ -10,7 +10,7 @@ public class SolarisQuiverbow implements ConfigurationModule {
 
     @Override
     public void init() {
-        SolarisConfigurationLoader.add("quiverchevsky", configuration -> {
+        SolarisConfigurationLoader.add("quiverchevsky", "quiverbow", configuration -> {
             ENTITY_BLACKLIST = Arrays.asList(configuration.getStringList("soulCairnBlacklist", "quiverbow", new String[]{"net.minecraft.entity.boss.IBossDisplayData"}, "List of entities that are barred from the Soul Cairn. Uses fully qualified class names."));
         });
     }

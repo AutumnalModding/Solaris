@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util.data.loader.lotr;
+package xyz.lilyflower.solaris.integration.lotr;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +21,7 @@ import lotr.common.fac.LOTRMapRegion;
 import lotr.common.world.map.LOTRWaypoint;
 import net.minecraftforge.common.util.EnumHelper;
 import xyz.lilyflower.solaris.init.Solaris;
-import xyz.lilyflower.solaris.util.data.LOTRFactionRankData;
-import xyz.lilyflower.solaris.util.data.loader.EnumHelperMappings;
+import xyz.lilyflower.solaris.util.EnumHelperMappings;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
@@ -171,7 +170,7 @@ public class LOTRCustomFactionLoader implements CustomDataLoader {
                 }
 
                 if (entries >= 5) {
-                    LOTRFaction faction = EnumHelper.addEnum(EnumHelperMappings.LOTR_EH_MAPPINGS, LOTRFaction.class, name, colour, LOTRDimension.MIDDLE_EARTH, region, map, types);
+                    LOTRFaction faction = EnumHelper.addEnum(EnumHelperMappings.LOTR, LOTRFaction.class, name, colour, LOTRDimension.MIDDLE_EARTH, region, map, types);
                     faction.approvesWarCrimes = warCrimes;
                     faction.isolationist = isolation;
                     faction.allowPlayer = canGetRank;

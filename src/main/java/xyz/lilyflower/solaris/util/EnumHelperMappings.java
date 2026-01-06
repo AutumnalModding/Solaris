@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util.data.loader;
+package xyz.lilyflower.solaris.util;
 
 import java.util.EnumSet;
 import lotr.common.LOTRDimension;
@@ -8,7 +8,7 @@ import lotr.common.world.spawning.LOTRInvasions;
 
 @SuppressWarnings("unused")
 public class EnumHelperMappings {
-    public static final Class<?>[][] LOTR_EH_MAPPINGS = {
+    public static final Class<?>[][] LOTR = {
             {LOTRInvasions.class, LOTRFaction.class},
             {LOTRFaction.class, int.class, LOTRDimension.class, LOTRDimension.DimensionRegion.class, LOTRMapRegion.class, EnumSet.class},
     };

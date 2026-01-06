@@ -7,30 +7,32 @@ import cpw.mods.fml.common.Loader;
 import java.util.function.Consumer;
 import net.minecraftforge.common.config.Configuration;
 import xyz.lilyflower.solaris.init.Solaris;
+import xyz.lilyflower.solaris.util.SolarisExtensions;
 
 public class SolarisConfigurationLoader {
-    private static final HashMap<String, ArrayList<Consumer<Configuration>>> MODULES = new HashMap<>();
+    private static final HashMap<SolarisExtensions.Pair<String, String>, ArrayList<Consumer<Configuration>>> MODULES = new HashMap<>();
 
-    public static void add(String mod, Consumer<Configuration> module) {
-        ArrayList<Consumer<Configuration>> modules = MODULES.getOrDefault(mod, new ArrayList<>());
+    public static void add(String mod, String name, Consumer<Configuration> module) {
+        SolarisExtensions.Pair<String, String> pair = new SolarisExtensions.Pair<>(mod, name);
+        ArrayList<Consumer<Configuration>> modules = MODULES.getOrDefault(pair, new ArrayList<>());
         modules.add(module);
-        MODULES.put(mod, modules);
+        MODULES.put(pair, modules);
     }
 
-    public static void load(File file) {
-        Configuration backing = new Configuration(file);
+    public static void load(File directory) {
+        ArrayList<Configuration> files = new ArrayList<>();
 
-        MODULES.forEach((mod, modules) -> {
-            if (Loader.isModLoaded(mod)) {
+        MODULES.forEach((pair, modules) -> {
+            if (Loader.isModLoaded(pair.left())) {
+                Configuration backing = new Configuration(new File(directory.getPath() + "/" + pair.right() + ".cfg"));
                 for (Consumer<Configuration> module : modules) {
-                    Solaris.LOGGER.debug("Loading configuration module for mod {}...", mod.toUpperCase());
+                    Solaris.LOGGER.debug("Loading configuration module '{}' for mod {}!", pair.right(), pair.left());
                     module.accept(backing);
                 }
+                files.add(backing);
             }
         });
 
-        if (backing.hasChanged()) {
-            backing.save();
-        }
+        for (Configuration backing : files) if (backing.hasChanged()) backing.save();
     }
 }

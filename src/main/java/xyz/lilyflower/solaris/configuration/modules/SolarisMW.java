@@ -8,7 +8,7 @@ public class SolarisMW implements ConfigurationModule {
 
     @Override
     public void init() {
-        SolarisConfigurationLoader.add("mw", configuration -> {
+        SolarisConfigurationLoader.add("mw", "vics_mw", configuration -> {
             ALLOW_SHOOTING_WHEN_SPRINTING = configuration.getBoolean("allowSprintFiring", "vics", true, "Allow shooting guns when sprinting");
         });
     }

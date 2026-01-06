@@ -9,7 +9,7 @@ public class SolarisContent implements ConfigurationModule {
 
     @Override
     public void init() {
-        SolarisConfigurationLoader.add("solaris", configuration -> {
+        SolarisConfigurationLoader.add("solaris", "content", configuration -> {
             ENABLE_CONTENT = configuration.getBoolean("globalContentToggle", "content", false, "Enables or disables all Solaris content. You probably want to leave this disabled.");
             MODPACK_IDENTIFIER = configuration.getString("modpackIdentifier", "content", "", "Modpack identifier for internal content. Don't touch this unless you know what you're doing.");
         });

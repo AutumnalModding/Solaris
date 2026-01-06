@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util.data.loader.lotr;
+package xyz.lilyflower.solaris.integration.lotr;
 
 import java.io.File;
 import java.io.IOException;

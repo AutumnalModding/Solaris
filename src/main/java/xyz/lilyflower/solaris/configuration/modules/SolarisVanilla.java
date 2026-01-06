@@ -44,8 +44,8 @@ public final class SolarisVanilla implements ConfigurationModule {
     };
 
     public void init() {
-        SolarisConfigurationLoader.add("solaris", MISC_TWEAKS);
-        SolarisConfigurationLoader.add("solaris", COMBAT_TWEAKS);
-        SolarisConfigurationLoader.add("solaris", BANDAID_FIXES);
+        SolarisConfigurationLoader.add("solaris", "vanilla", MISC_TWEAKS);
+        SolarisConfigurationLoader.add("solaris", "vanilla", COMBAT_TWEAKS);
+        SolarisConfigurationLoader.add("solaris", "bandaid", BANDAID_FIXES);
     }
 }

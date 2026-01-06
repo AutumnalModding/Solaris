@@ -11,5 +11,4 @@ public class SolarisExtensions {
 
     @Desugar public record Pair<L, R>(L left, R right) {} // The original 927
     @Desugar public record TriPair<L, M, R>(L left, M middle, R right) {}
-
 }

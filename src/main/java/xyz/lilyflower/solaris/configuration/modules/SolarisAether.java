@@ -8,8 +8,8 @@ public class SolarisAether implements ConfigurationModule {
 
     @Override
     public void init() {
-        SolarisConfigurationLoader.add("aether", configuration -> {
-            CONTINUUM_DANGEROUS = configuration.getBoolean("dangerousContinuumOrbs", "aether", false, "Allows Continuum Orbs to spawn ANY block and item in the game. WARNING: POTENTIALLY DANGEROUS!");
+        SolarisConfigurationLoader.add("aether", "aetherii", configuration -> { // no way to know WHICH aether is loaded
+            CONTINUUM_DANGEROUS = configuration.getBoolean("dangerousContinuumOrbs", "aetherii", false, "Allows Continuum Orbs to spawn ANY block and item in the game. WARNING: POTENTIALLY DANGEROUS!");
         });
     }
 }

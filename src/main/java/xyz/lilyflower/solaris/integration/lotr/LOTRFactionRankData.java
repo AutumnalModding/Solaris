@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util.data;
+package xyz.lilyflower.solaris.integration.lotr;
 
 import com.github.bsideup.jabel.Desugar;
 

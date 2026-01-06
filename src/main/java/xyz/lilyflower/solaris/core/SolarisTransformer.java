@@ -102,11 +102,11 @@ public class SolarisTransformer implements ClassFileTransformer {
         } catch (Throwable exception) { // this is bad practice but fuck it
             if (exception instanceof NoClassDefFoundError error && !CASCADING) {
                 CASCADING = true;
-                String target = error.getMessage().replaceAll("/", ".");
+                String target = error.getMessage().replaceAll("/", ".").replace("java.lang.ClassNotFoundException: ", "");
                 bytes = retransform(target, name, bytes);
             } else if (exception instanceof RuntimeException runtime && runtime.getMessage().contains("ClassNotFoundException") && !CASCADING) {
                 CASCADING = true;
-                String target = runtime.getMessage().replaceAll("/", ".");
+                String target = runtime.getMessage().replaceAll("/", ".").replace("java.lang.ClassNotFoundException: ", "");
                 bytes = retransform(target, name, bytes);
             }
             LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED TRANSFORMING CLASS: " + name, exception);
@@ -117,10 +117,10 @@ public class SolarisTransformer implements ClassFileTransformer {
 
     private byte[] retransform(String target, String name, byte[] bytes) {
         try {
-            SolarisBootstrap.LOGGER.warn("Warning: Attempting to cascade class: {}", target);
+//            SolarisBootstrap.LOGGER.warn("Warning: Attempting to cascade class: {}", target);
             LOADER.loadClass(target);
             CASCADING = false;
-            SolarisBootstrap.LOGGER.warn("WARNING: RETRANSFORMING CLASS {}!", name);
+//            SolarisBootstrap.LOGGER.warn("WARNING: RETRANSFORMING CLASS {}!", name);
             bytes = transform(name, bytes);
         } catch (ClassNotFoundException ignored) {}
 

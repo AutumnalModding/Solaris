@@ -19,7 +19,7 @@ public class SolarisWitchery implements ConfigurationModule {
     }
 
     public void init() {
-        SolarisConfigurationLoader.add("witchery", configuration -> {
+        SolarisConfigurationLoader.add("witchery", "witchery", configuration -> {
             String[] caps = configuration.getStringList("witcheryDamageCaps", "witchery", new String[]{},
                     """
                             Class-cap mapping for Witchery bosses. Format: <EntityName>:<DamageCap>

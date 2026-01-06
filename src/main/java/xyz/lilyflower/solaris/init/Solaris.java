@@ -29,12 +29,11 @@ import xyz.lilyflower.solaris.api.ConfigurationModule;
 import xyz.lilyflower.solaris.api.LoadStage;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
 import xyz.lilyflower.solaris.configuration.modules.SolarisAether;
-import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
 import xyz.lilyflower.solaris.configuration.modules.SolarisLOTR;
 import xyz.lilyflower.solaris.content.SolarisRegistry;
 import xyz.lilyflower.solaris.command.LTRDebuggerCommand;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
-import xyz.lilyflower.solaris.integration.galacticraft.PlanetRegistrationHook;
+import xyz.lilyflower.solaris.integration.galacticraft.PlanetParser;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 import xyz.lilyflower.solaris.util.ClasspathScanning;
 
@@ -74,7 +73,7 @@ public class Solaris {
     public void preInit(FMLPreInitializationEvent event) {
         STATE = LoadStage.PRELOADER;
         __INIT_MODULE(ConfigurationModule.class);
-        SolarisConfigurationLoader.load(new File("config/solaris.cfg"));
+        SolarisConfigurationLoader.load(new File("config/solaris/"));
         SolarisRegistry.initialize();
         SolarisIntegrationModule.execute();
     }
@@ -90,9 +89,7 @@ public class Solaris {
         }
 
         SolarisRegistry.initialize();
-        if (Loader.isModLoaded("GalacticraftCore")) {
-            SolarisIntegrationModule.add(new PlanetRegistrationHook(), !SolarisGalacticraft.MODDED_PLANET_INTEGRATION.isEmpty());
-        }
+        if (Loader.isModLoaded("GalacticraftCore")) { SolarisIntegrationModule.add(new PlanetParser(), true); }
         SolarisIntegrationModule.execute();
     }
 
