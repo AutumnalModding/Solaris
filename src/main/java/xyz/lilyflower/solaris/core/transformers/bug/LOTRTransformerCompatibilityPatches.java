@@ -1,7 +1,6 @@
 package xyz.lilyflower.solaris.core.transformers.bug;
 
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;

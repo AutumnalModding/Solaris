@@ -19,13 +19,6 @@ public class SolarisGalacticraft implements ConfigurationModule {
             MAIN_SOLAR_SYSTEM = configuration.getString("mainSolarSystem", "galacticraft", "sol", "Main solar system. Change this if you disable Sol, or want to set the default galaxy map viewpoint.");
             DISABLED_CELESTIAL_BODIES = Arrays.asList(configuration.getStringList("disabledBodies", "galacticraft", new String[]{}, "List of celestial body IDs to disable."));
             ENTRY_POD_SPEED = configuration.getFloat("entryPodSpeed", "galacticraft", -0.5F, Float.MIN_VALUE, Float.MAX_VALUE, "Initial entry pod speed.");
-            String[] data = configuration.getStringList("additionalPlanets", "galacticraft", new String[]{}, "List of mods to register Galacticraft integration for.");
-            for (String entry : data) {
-                String[] split = entry.split(":");
-                if (split.length >= 7) {
-
-                }
-            }
         });
     }
 }

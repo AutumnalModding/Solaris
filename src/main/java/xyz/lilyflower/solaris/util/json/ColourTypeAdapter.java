@@ -1,6 +1,5 @@
 package xyz.lilyflower.solaris.util.json;
 
-import com.github.bsideup.jabel.Desugar;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;

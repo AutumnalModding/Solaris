@@ -15,7 +15,7 @@ public final class SolarisVanilla implements ConfigurationModule {
     public static boolean DISABLE_WORLDGEN_SPAWNING = false;
     public static boolean DISABLE_SNOW_UPDATES = false;
     public static int END_PORTAL_TARGET = 1;
-    public static ArrayList<Integer> NEVER_UNLOAD = new ArrayList<>();
+    public static final ArrayList<Integer> NEVER_UNLOAD = new ArrayList<>();
 
     public static final Consumer<Configuration> COMBAT_TWEAKS = configuration -> {
         NO_IFRAME_DAMAGETYPES = new ArrayList<>(Arrays.asList(configuration.getStringList("noImmunityDamageTypes", "vanilla.damage", new String[]{},
@@ -36,7 +36,7 @@ public final class SolarisVanilla implements ConfigurationModule {
             } catch (NumberFormatException exception) {
                 Solaris.LOGGER.error("Invalid dimension ID {}!", dimension);
             }
-        };
+        }
     };
 
     public static final Consumer<Configuration> MISC_TWEAKS = configuration -> {
