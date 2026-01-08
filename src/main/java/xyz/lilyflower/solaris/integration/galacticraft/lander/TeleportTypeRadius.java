@@ -12,16 +12,17 @@ import net.minecraft.world.WorldServer;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.init.Solaris;
 
+@SuppressWarnings("unused")
 public class TeleportTypeRadius extends TeleportTypeLander {
-    private final int targetX;
-    private final int targetZ;
-    private final int maxDeviation;
+    private final int centerX;
+    private final int centerZ;
+    private final int radius;
     private final Class<? extends EntityLanderBase> lander;
 
-    public TeleportTypeRadius(int x, int y, int deviation, Class<? extends EntityLanderBase> lander) {
-        this.targetX = x;
-        this.targetZ = y;
-        this.maxDeviation = deviation;
+    public TeleportTypeRadius(int centerX, int centerZ, int radius, Class<? extends EntityLanderBase> lander) {
+        this.centerX = centerX;
+        this.centerZ = centerZ;
+        this.radius = radius;
         this.lander = lander;
     }
 
@@ -45,9 +46,9 @@ public class TeleportTypeRadius extends TeleportTypeLander {
     public Vector3 getEntitySpawnLocation(WorldServer server, Entity entity) {
         Random random = new Random();
         return entity == null ? null : new Vector3(
-                this.targetX + random.nextInt(maxDeviation * 2 + 1) - maxDeviation,
+                this.centerX + random.nextInt(radius * 2 + 1) - radius,
                 this.getYCoordinateToTeleport(),
-                this.targetZ + random.nextInt(maxDeviation * 2 + 1) - maxDeviation
+                this.centerZ + random.nextInt(radius * 2 + 1) - radius
         );
     }
 }

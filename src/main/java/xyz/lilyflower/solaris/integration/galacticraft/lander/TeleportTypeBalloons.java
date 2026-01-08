@@ -4,6 +4,7 @@ import micdoodle8.mods.galacticraft.core.entities.EntityLanderBase;
 import micdoodle8.mods.galacticraft.planets.mars.entities.EntityLandingBalloons;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+@SuppressWarnings("unused")
 public class TeleportTypeBalloons extends TeleportTypeLander {
     @Override
     public EntityLanderBase lander(EntityPlayerMP occupant) {

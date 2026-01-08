@@ -4,19 +4,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
+import org.objectweb.asm.Opcodes;
 import java.security.MessageDigest;
 import java.lang.reflect.Constructor;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import java.security.ProtectionDomain;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -34,8 +31,7 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 
 public class SolarisTransformer implements ClassFileTransformer {
     private static boolean CASCADING = false;
-    static LaunchClassLoader LOADER = null;
-    public static final boolean DEBUG_ENABLED = Files.exists(Paths.get(".classes/")) || System.getProperty("solaris.debug") != null;
+    static final ClassLoader LOADER = SolarisTransformer.class.getClassLoader();
     private static final HashMap<String, Class<? extends SolarisClassTransformer>> TRANSFORMERS = new HashMap<>();
 
     @Override
@@ -46,7 +42,7 @@ public class SolarisTransformer implements ClassFileTransformer {
         name = reader.getClassName();
 
         if ((node.access & Opcodes.ACC_INTERFACE) != 0) return bytes;
-        if (DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Class: {}", name.replaceAll("/", "∕"));
+        if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.DEBUG_LOG.debug("Loading: {}", name.replaceAll("/", "∕"));
 
         if (TRANSFORMERS.containsKey(name)) {
             SolarisBootstrap.LOGGER.debug("Transforming {} with transformer {} directly", name, TRANSFORMERS.get(name).getSimpleName());
@@ -66,7 +62,7 @@ public class SolarisTransformer implements ClassFileTransformer {
             }
         }
 
-        if (DEBUG_ENABLED) {
+        if (SolarisBootstrap.DEBUG_ENABLED) {
             File dump = new File(".classes/" + name.replaceAll("/", "∕") + ".class");
             try (FileOutputStream output = new FileOutputStream(dump)) {
                 output.write(bytes);
@@ -93,7 +89,38 @@ public class SolarisTransformer implements ClassFileTransformer {
             Arrays.stream(transformer.getDeclaredMethods()).iterator().forEachRemaining(method -> methods.add(method.getName()));
 
             if (methods.contains("solaris$metadata")) modified |= invoke(transformer, instance, node, null); // Woe, long ass line upon ye. I don't -need- to do it this way but it's Funny lmao
-            for (MethodNode method : node.methods) if (methods.contains(method.name.replaceAll("<", "solaris\\$").replaceAll(">", "")) && (method.access & Opcodes.ACC_ABSTRACT) == 0) modified |= invoke(transformer, instance, node, method);
+            for (MethodNode method : node.methods) {
+                String target = method.name
+                        .replaceAll("<", "__")
+                        .replaceAll(">", "__");
+
+                method.name = switch(method.name) {
+                    case "for", "int", "do", "void", "float", "double",
+                         "switch", "case", "default", "if", "boolean", "else",
+                         "interface", "class", "enum", "while", "true", "false",
+                         "public", "private", "protected", "try", "catch", "finally",
+                         "long", "byte", "short", "char", "abstract", "import",
+                         "package", "static", "null", "new", "throw", "return",
+                         "break", "continue", "throws", "extends", "implements",
+                         "super", "this", "final", "native", "strictfp",
+                         "synchronized", "transient", "volatile", "instanceof",
+                         "assert", "goto", "const", "var", "yield", "record",
+                         "sealed", "permits" -> "__" + method.name;
+                    default -> method.name;
+                };
+
+                if (Character.isDigit(method.name.charAt(0))) {
+                    target = "__" + method.name;
+                }
+
+                if (method.name.isEmpty()) {
+                    target = "__empty";
+                }
+
+                if (methods.contains(target) && (method.access & Opcodes.ACC_ABSTRACT) == 0) {
+                    modified |= invoke(transformer, instance, node, method);
+                }
+            }
 
             if (modified) {
                 node.accept(writer);
@@ -115,12 +142,11 @@ public class SolarisTransformer implements ClassFileTransformer {
         return bytes;
     }
 
+
     private byte[] retransform(String target, String name, byte[] bytes) {
         try {
-//            SolarisBootstrap.LOGGER.warn("Warning: Attempting to cascade class: {}", target);
             LOADER.loadClass(target);
             CASCADING = false;
-//            SolarisBootstrap.LOGGER.warn("WARNING: RETRANSFORMING CLASS {}!", name);
             bytes = transform(name, bytes);
         } catch (ClassNotFoundException ignored) {}
 
@@ -129,7 +155,8 @@ public class SolarisTransformer implements ClassFileTransformer {
 
     static {
         SolarisBootstrap.LOGGER.debug("Scanning class transformers...");
-        List<Class<SolarisClassTransformer>> classes = ClasspathScanning.implementations(SolarisClassTransformer.class, false, false);
+        String enabled = System.getProperty("solaris.verboseClasspathScanning");
+        List<Class<SolarisClassTransformer>> classes = ClasspathScanning.implementations(SolarisClassTransformer.class, false, enabled != null);
 
         for (Class<SolarisClassTransformer> clazz : classes) {
             try {

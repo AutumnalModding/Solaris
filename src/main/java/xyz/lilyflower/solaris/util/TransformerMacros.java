@@ -16,10 +16,10 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.core.SolarisBootstrap;
-import xyz.lilyflower.solaris.core.SolarisTransformer;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 
 public class TransformerMacros {
+    @SuppressWarnings("unused")
     public static void LogMessage(InsnList list, String level, String message) {
         InsnList instructions = new InsnList();
 
@@ -30,6 +30,7 @@ public class TransformerMacros {
         list.add(instructions);
     }
 
+    @SuppressWarnings("unused")
     public static void KillJVM(InsnList list, int code, boolean hard) {
         InsnList instructions = new InsnList();
 
@@ -48,6 +49,7 @@ public class TransformerMacros {
         list.add(new LdcInsnNode((raw ? "" : "$APPLYPREFIX$") + target)); // see GameDataTransformer
     }
 
+    @SuppressWarnings("unused")
     public static void GetStaticField(Class<?> clazz, String name, InsnList list) {
         try {
             String owner = Type.getInternalName(clazz);
@@ -65,7 +67,7 @@ public class TransformerMacros {
             Method method = clazz.getDeclaredMethod(name, arguments);
             String descriptor = Type.getMethodDescriptor(method);
 
-            if (SolarisTransformer.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Validating {}#{}{} against {}#{}{}", owner, name, descriptor, node.owner, node.name, node.desc);
+            if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Validating {}#{}{} against {}#{}{}", owner, name, descriptor, node.owner, node.name, node.desc);
             return node.owner.equals(owner) && node.desc.equals(descriptor);
         } catch (Throwable exception) {
             LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED VERFIYING CALL: " + name, exception);
@@ -83,22 +85,19 @@ public class TransformerMacros {
                 list.insertBefore(method, new InsnNode(Opcodes.SASTORE + argument.getSize()));
             }
             if (method.getOpcode() != Opcodes.INVOKESTATIC) list.insertBefore(method, new InsnNode(Opcodes.POP));
-            if (SolarisTransformer.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Killing call to {}#{}{}", method.owner, method.name, method.desc);
+            if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Killing call to {}#{}{}", method.owner, method.name, method.desc);
             list.remove(method);
         });
     }
 
-    public static MethodInsnNode AddNoopCall() {
-        return new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(TransformerMacros.class), "__INTERNAL_NOOP", "()V", false);
-    }
-
     // TODO: actually implement this
-    @SuppressWarnings("EmptyMethod")
+    @SuppressWarnings({"EmptyMethod", "unused"})
     public static void CancelRegistrationForID(InsnList list, int index) {}
 
     @SuppressWarnings("EmptyMethod")
     public static void __INTERNAL_NOOP() {}
 
+    @SuppressWarnings("unused")
     public static void __INTERNAL_KILL(int code, boolean hard) {
         if (!hard) {
             FMLCommonHandler.instance().exitJava(code, false);

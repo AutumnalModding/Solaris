@@ -27,6 +27,14 @@ public class ClasspathScanning {
                 .rejectPackages("jdk.*")
                 .rejectPackages("org.spongepowered.*")
                 .rejectPackages("org.objectweb.*")
+                .rejectPackages("org.lwjgl.*")
+                .rejectPackages("org.apache.*")
+                .rejectPackages("gnu.trove.*")
+                .rejectPackages("com.ibm.*")
+                .rejectPackages("io.netty.*")
+                .rejectPackages("com.google.*")
+                .rejectPackages("scala.*")
+                .rejectPackages("kotlin.*")
                 .verbose(verbose)
                 .scan();
 

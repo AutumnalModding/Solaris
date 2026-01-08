@@ -25,15 +25,14 @@ import xyz.lilyflower.solaris.util.SolarisMessageHelper;
 @Mixin(SoulShot.class)
 @SuppressWarnings("UnusedMixin")
 public class SoulShotMixin {
-    @Unique
-    private static final HashMap<String, EggLogic> solaris$logic = new HashMap<>();
+    @Unique private static final HashMap<String, EggLogic> solaris$logic = new HashMap<>();
 
     /**
      * @author Fractalflower
-     * @reason Holy shit, the original code is so stupid. The entity class is hardcoded.
+     * @reason Holy shit, the original code is so stupid. The item drop is hardcoded.
      * It's literally a bunch of nested if-else instanceof statements. Why. Just why.
-     * So I'm rewriting it to work properly with modded entities, and also hopefully
-     * improve the performance a bit (due to using a modern compiler).
+     * So I'm rewriting it to work normally with modded entities - and also hopefully
+     * improve the performance a little bit, due to using a modern Java 17 compiler..
      */
     @Overwrite(remap = false)
     public void onImpact(MovingObjectPosition target) {

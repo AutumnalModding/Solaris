@@ -24,7 +24,8 @@ public class SolarisMixinLoader implements IMixinConfigPlugin {
     public static final Logger LOGGER = LogManager.getLogger("Solaris Mixins");
     private static final Path MODS_DIRECTORY_PATH = new File(Launch.minecraftHome, "mods/").toPath();
 
-    @Override public void onLoad(String location) {}
+    @Override public void onLoad(String location) {
+    }
     @Override public String getRefMapperConfig() { return null; }
     @Override public void acceptTargets(Set<String> ours, Set<String> theirs) {}
     @Override public boolean shouldApplyMixin(String target, String mixin) { return true; }
@@ -51,6 +52,7 @@ public class SolarisMixinLoader implements IMixinConfigPlugin {
                 LOGGER.debug("Loading mixin: {}", mixin.mixin);
             }
         }
+
         return mixins;
     }
 
@@ -62,8 +64,7 @@ public class SolarisMixinLoader implements IMixinConfigPlugin {
 
             MinecraftURLClassPath.addJar(jar);
             return true;
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             LoggingHelper.oopsie(LOGGER, "FAILED LOADING MIXIN TARGET: " + target, exception);
             return false;
         }
@@ -77,8 +78,7 @@ public class SolarisMixinLoader implements IMixinConfigPlugin {
                     .map(Path::toFile)
                     .findFirst()
                     .orElse(null);
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             LoggingHelper.oopsie(LOGGER, "FAILED LOCATING MIXIN TARGET: " + target, exception);
             return null;
         }
@@ -86,8 +86,4 @@ public class SolarisMixinLoader implements IMixinConfigPlugin {
 
     @Override public void preApply(String target, ClassNode clazz, String mixin, IMixinInfo info) {}
     @Override public void postApply(String target, ClassNode clazz, String mixin, IMixinInfo info) {}
-
-
-
-
 }

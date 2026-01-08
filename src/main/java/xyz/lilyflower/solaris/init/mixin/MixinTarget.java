@@ -18,7 +18,8 @@ public enum MixinTarget {
     OPENCOMPUTERS("OpenComputers", "OpenComputers", false),
     ADVANCED_ROCKETRY("Advanced Rocketry", "AdvancedRocketry", true),
     AOA("Advent of Ascension", "Nevermine-Tslat", true),
-    NTM("HBM-NTM-", "HBM's Nuclear Tech Mod", true)
+    NTM("HBM's Nuclear Tech Mod", "HBM-NTM-", true),
+    MIXIN_ITSELF("The Mixin Loader Itself", "+unimixins", true)
 
     ;
 

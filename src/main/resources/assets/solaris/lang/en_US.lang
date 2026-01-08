@@ -26,3 +26,6 @@ solaris.invalid_spawn_egg.4=(Make sure to specify what mod & entity has this iss
 
 solarsystem.solaris$beta=Solaris Beta
 solarsystem.solaris$alpha=Solaris Alpha
+
+subtitle.game.player.die=Player dies
+subtitle.weather.rain.above=Rain

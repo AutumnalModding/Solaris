@@ -16,19 +16,19 @@ public class SolarisTransformerSettings {
         CONFIG_RUNNERS.add(new SolarisExtensions.Pair<>(identifier, runner));
     }
 
-    public static void load(File file) {
-        // Make sure we don't load earlyconfig in a development environment. For some reason.
+    public static void load() {
+        // Make sure we don't load earlyconfig in a development environment - for some reason, it dies?
         if (System.getProperties().containsKey("net.minecraftforge.gradle.GradleStart.srgDir")) return;
-        Configuration settings = new Configuration(file);
+        ArrayList<Configuration> files = new ArrayList<>();
         SolarisBootstrap.LOGGER.info("Initializing transformer settings...");
 
         CONFIG_RUNNERS.forEach(runner -> {
+            Configuration settings = new Configuration(new File("config/solaris/early/" + runner.left() + ".cfg"));
+            files.add(settings);
             SolarisBootstrap.LOGGER.info("Parsing settings for '{}'!", runner.left().toUpperCase());
             runner.right().accept(settings);
         });
 
-        if (settings.hasChanged()) {
-            settings.save();
-        }
+        for (Configuration backing : files) if (backing.hasChanged()) backing.save();
     }
 }

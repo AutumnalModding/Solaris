@@ -26,7 +26,7 @@ public class SolarisConfigurationLoader {
             if (Loader.isModLoaded(pair.left())) {
                 Configuration backing = new Configuration(new File(directory.getPath() + "/" + pair.right() + ".cfg"));
                 for (Consumer<Configuration> module : modules) {
-                    Solaris.LOGGER.debug("Loading configuration module '{}' for mod {}!", pair.right(), pair.left());
+                    Solaris.LOGGER.debug("Loading configuration module for mod {}!", pair.right());
                     module.accept(backing);
                 }
                 files.add(backing);

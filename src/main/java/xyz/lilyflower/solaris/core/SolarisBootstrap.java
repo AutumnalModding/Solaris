@@ -1,66 +1,78 @@
 package xyz.lilyflower.solaris.core;
 
-import java.net.URL;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.net.URISyntaxException;
 import java.lang.reflect.Constructor;
+import java.util.Map;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.Logger;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.apache.logging.log4j.LogManager;
 import java.lang.instrument.Instrumentation;
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.launchwrapper.ITweaker;
-import cpw.mods.fml.relauncher.CoreModManager;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
-import org.spongepowered.asm.launch.MixinBootstrap;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import xyz.lilyflower.solaris.api.TransformerSettingsModule;
 import xyz.lilyflower.solaris.core.settings.SolarisTransformerSettings;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.util.ClasspathScanning;
+import xyz.lilyflower.solaris.util.SolarisExtensions;
 
-@SuppressWarnings("unused") // How early can we go?
-public class SolarisBootstrap implements ITweaker {
+@SuppressWarnings("unused")
+@IFMLLoadingPlugin.MCVersion("1.7.10")
+@IFMLLoadingPlugin.Name("SolarisBootstrap")
+public class SolarisBootstrap implements IFMLLoadingPlugin {
     public static final Logger LOGGER = LogManager.getLogger("Solaris Bootstrap");
+    public static final Logger DEBUG_LOG = LogManager.getLogger("Solaris Debug");
+    private static final Path MODS_DIRECTORY_PATH = new File(Launch.minecraftHome, "mods/").toPath();
+    public static final boolean DEBUG_ENABLED = Files.exists(Paths.get(".classes/")) || System.getProperty("solaris.debug") != null;
 
-    @Override
-    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
-        URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-        if (location == null) return;
-        if (!"file".equals(location.getProtocol())) return;
+    @SuppressWarnings("resource")
+    public static File locate(String prefix) {
         try {
-            MixinBootstrap.getPlatform().addContainer(location.toURI());
-            String mod = new File(location.toURI()).getName();
-            CoreModManager.getReparseableCoremods().add(mod);
-        } catch (URISyntaxException exception) {
-            LoggingHelper.oopsie(LOGGER, "FAILED TO LOAD COREMOD", exception);
-            FMLCommonHandler.instance().exitJava(400, true);
+            return Files.walk(MODS_DIRECTORY_PATH)
+                    .filter(path -> {
+                        final String location = path.toString().replaceAll(".*mods/", "");
+                        final String basename = SolarisExtensions.basename(location).toLowerCase();
+                        final String extension = SolarisExtensions.extension(location);
+
+                        return basename.startsWith(prefix) && "jar".equals(extension);
+                    })
+                    .map(Path::toFile)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        catch (IOException exception) {
+            return null;
         }
     }
 
-    @Override
-    public void injectIntoClassLoader(LaunchClassLoader launch) {
-        // You either die a FakeTransformerExclusions...
-        // ...or live long enough to see yourself an LCL call.
-        launch.addTransformerExclusion("com.unascribed.ears");
-        SolarisTransformer.LOADER = launch;
+    public static void load(File jar) throws Exception {
+        final LaunchClassLoader loader = Launch.classLoader;
+        loader.addURL(jar.toURI().toURL());
     }
 
-    @Override
-    public String getLaunchTarget() {
-        return "net.minecraft.client.main.Main";
-    }
+    private static void load(String prefix) {
+        try {
+            File jar = locate(prefix);
+            if (jar == null) return;
+            if (!jar.exists()) throw new FileNotFoundException(jar.toString());
 
-    @Override
-    public String[] getLaunchArguments() {
-        return new String[0];
+            load(jar);
+        } catch (Exception ignored) {}
     }
 
     static {
         LOGGER.info("Spinning up...");
         System.setProperty("jdk.attach.allowAttachSelf", "true");
+        SolarisTransformer transformer = new SolarisTransformer();
         try {
             ByteBuddyAgent.AttachmentProvider.Compound provider = new ByteBuddyAgent.AttachmentProvider.Compound(
                     ByteBuddyAgent.AttachmentProvider.ForModularizedVm.INSTANCE,
@@ -70,14 +82,13 @@ public class SolarisBootstrap implements ITweaker {
                     ByteBuddyAgent.AttachmentProvider.ForUserDefinedToolsJar.INSTANCE
             ); // <-- DEFAULT, minus JNA.
             Instrumentation agent = ByteBuddyAgent.install(provider);
-            agent.addTransformer(new SolarisTransformer(), true);
+            agent.addTransformer(transformer, true);
         } catch (ExceptionInInitializerError error) {
-
             LOGGER.error("Failed to initialize agent with the standard method. Trying JNA. This might crash on Windows!");
             try {
                 Class.forName("com.sun.jna.Native"); // Last resort - will sometimes fail on Windows.
                 Instrumentation agent = ByteBuddyAgent.install(ByteBuddyAgent.AttachmentProvider.ForEmulatedAttachment.INSTANCE);
-                agent.addTransformer(new SolarisTransformer(), true);
+                agent.addTransformer(transformer, true);
             } catch (ExceptionInInitializerError | UnsatisfiedLinkError | ClassNotFoundException failure) {
                 LoggingHelper.oopsie(LOGGER, "Failed to initialize agent, running in mixin-only mode - try running with a Java 8 JDK.", failure);
             }
@@ -87,9 +98,9 @@ public class SolarisBootstrap implements ITweaker {
         long pid = Long.parseLong(name.split("@")[0]);
         LOGGER.info("Process ID: {}", pid);
 
-        String enabled = System.getProperty("solaris.earlyconfig");
-        LOGGER.info("If it freezes here, try restarting with -Dsolaris.earlyconfig=false as a JVM argument!");
-        if (enabled == null || !enabled.equals("false")) {
+        String enabled = System.getProperty("solaris.disableTransformerSettings");
+        if (enabled == null) {
+            LOGGER.info("If it freezes here, try restarting with -Dsolaris.disableTransformerSettings as a JVM argument!");
             LOGGER.info("Scanning transformer settings modules..."); int count = 0; // love that you can just Do This for compacting lines.
             List<Class<TransformerSettingsModule>> modules = ClasspathScanning.implementations(TransformerSettingsModule.class, false, false);
             for (Class<TransformerSettingsModule> module : modules) {
@@ -105,13 +116,15 @@ public class SolarisBootstrap implements ITweaker {
                 }
             }
             LOGGER.info("Scan complete. Loaded {} modules.", count);
-
-            File dir = new File("config/solaris/");
-            if (dir.exists() || dir.mkdirs()) {
-                SolarisTransformerSettings.load(new File("config/solaris/early.cfg"));
-            }
+            SolarisTransformerSettings.load();
         }
 
         LOGGER.info("Attach completed. Handing over control...");
     }
+
+    @Override public String getSetupClass() { return null; }
+    @Override public void injectData(Map<String, Object> data) {}
+    @Override public String getModContainerClass() { return null; }
+    @Override public String getAccessTransformerClass() { return null; }
+    @Override public String[] getASMTransformerClass() { return new String[0]; }
 }

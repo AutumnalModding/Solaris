@@ -4,12 +4,39 @@ plugins {
     id 'com.gtnewhorizons.gtnhconvention'
 }
 
+afterEvaluate {
+    jar {
+        manifest {
+            attributes.remove("TweakClass")
+        }
+    }
+}
+
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register('mixinsJar', Jar) {
+    archiveClassifier = 'mixins'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    include 'mixins.solaris.json'
+    include 'mixins.solaris.refmap.json'
+
+    from sourceSets.main.output
+    from 'src/main/resources'
+
     manifest {
         attributes(
-            'TweakClass': 'xyz.lilyflower.solaris.core.SolarisBootstrap'
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'Class-Path': jar.archiveFileName.get(),
+                'MixinConfigs': 'mixins.solaris.json'
         )
     }
+}
+
+tasks.named('build') {
+    dependsOn mixinsJar
 }
 
 shadowJar {

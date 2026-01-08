@@ -2,7 +2,6 @@ package xyz.lilyflower.solaris.integration.galacticraft;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.util.UUID;
 import micdoodle8.mods.galacticraft.api.galaxies.GalaxyRegistry;
 import micdoodle8.mods.galacticraft.api.galaxies.Star;
 import micdoodle8.mods.galacticraft.api.galaxies.SolarSystem;
@@ -22,6 +21,7 @@ import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
 import xyz.lilyflower.solaris.init.Solaris;
 import xyz.lilyflower.solaris.internal.SolarisClassloader;
 import xyz.lilyflower.solaris.util.data.Colour;
+import xyz.lilyflower.solaris.util.data.TypedParam;
 import xyz.lilyflower.solaris.util.json.ClassTypeAdapter;
 import xyz.lilyflower.solaris.util.json.ColourTypeAdapter;
 
@@ -38,14 +38,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import xyz.lilyflower.solaris.util.json.TypedParamAdapter;
 
 public class PlanetParser implements SolarisIntegrationModule {
     public static final HashSet<Star> STARS = new HashSet<>();
-    public static SolarSystem ALPHA = !SolarisGalacticraft.DISABLED_CELESTIAL_BODIES.contains("sol")
+    public static final SolarSystem ALPHA = !SolarisGalacticraft.DISABLED_CELESTIAL_BODIES.contains("sol")
             ? GalacticraftCore.solarSystemSol
             : new SolarSystem("solaris$alpha", "milkyWay").setMapPosition(new Vector3(0, 0, 0));
 
-    public static SolarSystem BETA = new SolarSystem("solaris$beta", "milkyWay").setMapPosition(new Vector3(-0.55F, 1.0F, 0.0F));
+    public static final SolarSystem BETA = new SolarSystem("solaris$beta", "milkyWay").setMapPosition(new Vector3(-0.55F, 1.0F, 0.0F));
 
     @Override
     @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions", "unchecked"})
@@ -55,8 +56,9 @@ public class PlanetParser implements SolarisIntegrationModule {
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Class.class, new ClassTypeAdapter())
-                .registerTypeHierarchyAdapter(Class.class, new ClassTypeAdapter())
                 .registerTypeAdapter(Colour.class, new ColourTypeAdapter())
+                .registerTypeAdapter(TypedParam.class, new TypedParamAdapter())
+                .registerTypeHierarchyAdapter(Class.class, new ClassTypeAdapter())
                 .create();
 
         File definitions = new File(System.getProperty("user.dir") + "/config/solaris/galacticraft/");
@@ -73,7 +75,7 @@ public class PlanetParser implements SolarisIntegrationModule {
                 ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                 node.version = Opcodes.V1_8;
                 node.access = Opcodes.ACC_PUBLIC;
-                node.name = UUID.randomUUID().toString();
+                node.name = PlanetProvider.class.getSimpleName() + "$" + data.provider().getSimpleName();
                 node.superName = PlanetProvider.class.getName().replace('.', '/');
 
                 MethodNode method = new MethodNode(

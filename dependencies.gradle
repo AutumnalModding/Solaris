@@ -2,6 +2,11 @@
 //file:noinspection DependencyNotationArgument
 //file:noinspection GroovyAssignabilityCheck
 
+/**
+ * For flatfiles WITHOUT a Github link, they are from CurseForge.<br/>
+ * Grab that file off of CF, and run it through BON2.<br/>
+ * See: https://github.com/tterrag1098/BON2
+ */
 dependencies {
     compileOnly "com.github.GTNewHorizons:Forgelin:2.0.3-GTNH"
     shadowImplementation 'net.bytebuddy:byte-buddy:1.14.10'
@@ -9,6 +14,8 @@ dependencies {
     shadowImplementation 'io.github.classgraph:classgraph:4.8.177'
     shadowImplementation 'net.java.dev.jna:jna:5.14.0'
     shadowImplementation 'net.java.dev.jna:jna-platform:5.14.0'
+    shadowImplementation annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1")
+//    shadowCompile files("libs/+unimixins-all-1.7.10-0.1.23.jar") // https://github.com/LegacyModdingMC/UniMixins/releases/download/0.1.23/+unimixins-all-1.7.10-0.1.23.jar
 
     compileOnly deobfCurse("atum-59621:2256356")
     compileOnly deobfCurse("rple-1050511:5494077")
@@ -30,7 +37,7 @@ dependencies {
     compileOnly files("libs/Nevermine-Tslat-1.1.2-deobf.jar")
     compileOnly deobfCurse("advanced-rocketry-236542:2985057")
     compileOnly deobfCurse("official-divinerpg-363543:6330550")
-    compileOnly deobfCurse("galacticraft-legacy-564236:4501439")
+    compileOnly files("libs/Galacticraft-3.4.14-GTNH-dev.jar") // https://github.com/GTNewHorizons/Galacticraft/releases/download/3.4.14-GTNH/Galacticraft-3.4.14-GTNH-dev.jar
     compileOnly "com.falsepattern:falsepatternlib-mc1.7.10:1.4.0"
     compileOnly files("libs/GalaxySpace-1.7.10-1.2.15-deobf.jar")
     compile deobfCurse("dimensional-doors-legacy-404239:4967772")
