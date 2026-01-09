@@ -1,4 +1,3 @@
-// Add your dependencies here
 //file:noinspection DependencyNotationArgument
 //file:noinspection GroovyAssignabilityCheck
 
@@ -15,7 +14,6 @@ dependencies {
     shadowImplementation 'net.java.dev.jna:jna:5.14.0'
     shadowImplementation 'net.java.dev.jna:jna-platform:5.14.0'
     shadowImplementation annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:0.3.7-beta.1")
-//    shadowCompile files("libs/+unimixins-all-1.7.10-0.1.23.jar") // https://github.com/LegacyModdingMC/UniMixins/releases/download/0.1.23/+unimixins-all-1.7.10-0.1.23.jar
 
     compileOnly deobfCurse("atum-59621:2256356")
     compileOnly deobfCurse("rple-1050511:5494077")
@@ -36,12 +34,13 @@ dependencies {
     compileOnly files("libs/shadowworld-1.3.3-deobf.jar")
     compileOnly files("libs/Nevermine-Tslat-1.1.2-deobf.jar")
     compileOnly deobfCurse("advanced-rocketry-236542:2985057")
-    compileOnly deobfCurse("official-divinerpg-363543:6330550")
     compileOnly files("libs/Galacticraft-3.4.14-GTNH-dev.jar") // https://github.com/GTNewHorizons/Galacticraft/releases/download/3.4.14-GTNH/Galacticraft-3.4.14-GTNH-dev.jar
+    compileOnly deobfCurse("official-divinerpg-363543:6330550")
     compileOnly "com.falsepattern:falsepatternlib-mc1.7.10:1.4.0"
     compileOnly files("libs/GalaxySpace-1.7.10-1.2.15-deobf.jar")
     compile deobfCurse("dimensional-doors-legacy-404239:4967772")
     compileOnly deobfCurse("vics-modern-warfare-mod-243788:2819851")
+    compileOnly files("libs/mod_voxelMap_1.7.0b_for_1.7.10-deobf.jar")
     compileOnly deobfCurse("the-lord-of-the-rings-mod-legacy-423748:4091561")
     compileOnly "com.gtnewhorizons.retrofuturabootstrap:RetroFuturaBootstrap:1.0.7"
 }

@@ -50,6 +50,7 @@
     "vics.WeaponFireAspectMixin",
     "vics.WeaponMixin",
     "vics.WeaponRendererMixin",
+    "voxelmap.VoxelmapEndlessIDsMixin",
     "witchery.ItemGlassGobletMixin",
     "witchery.entity.IHandleDTOverarchingMixin$RegularCapRemover",
     "witchery.entity.IHandleDTOverarchingMixin$VampireDTCapRemover",

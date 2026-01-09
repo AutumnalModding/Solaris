@@ -77,24 +77,20 @@ public class SolarisTransformer implements ClassFileTransformer {
     @SuppressWarnings("deprecation") // 'since java 9' yeah good thing this is java 8 then
     private byte[] transform(String name, byte[] bytes) {
         try {
-            ClassNode node = new ClassNode();
-            ClassReader reader = new ClassReader(bytes);
-            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            reader.accept(node, 0);
-            
             boolean modified = false;
             Class<? extends SolarisClassTransformer> transformer = TRANSFORMERS.get(name);
             SolarisClassTransformer instance = transformer.newInstance();
             ArrayList<String> methods = new ArrayList<>();
             Arrays.stream(transformer.getDeclaredMethods()).iterator().forEachRemaining(method -> methods.add(method.getName()));
 
-            if (methods.contains("solaris$metadata")) modified |= invoke(transformer, instance, node, null); // Woe, long ass line upon ye. I don't -need- to do it this way but it's Funny lmao
-            for (MethodNode method : node.methods) {
-                String target = method.name
-                        .replaceAll("<", "__")
-                        .replaceAll(">", "__");
+            ClassNode node = new ClassNode();
+            ClassReader reader = new ClassReader(bytes);
+            reader.accept(node, 0);
+            ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
-                method.name = switch(method.name) {
+            if (methods.contains("solaris$metadata")) modified |= invoke(transformer, instance, node, null, "solaris$metadata"); // Woe, long ass line upon ye. I don't -need- to do it this way but it's Funny lmao
+            for (MethodNode method : node.methods) {
+                String target = switch(method.name) {
                     case "for", "int", "do", "void", "float", "double",
                          "switch", "case", "default", "if", "boolean", "else",
                          "interface", "class", "enum", "while", "true", "false",
@@ -109,6 +105,10 @@ public class SolarisTransformer implements ClassFileTransformer {
                     default -> method.name;
                 };
 
+                target = target
+                        .replaceAll("<", "__")
+                        .replaceAll(">", "__");
+
                 if (Character.isDigit(method.name.charAt(0))) {
                     target = "__" + method.name;
                 }
@@ -117,8 +117,10 @@ public class SolarisTransformer implements ClassFileTransformer {
                     target = "__empty";
                 }
 
+                if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.DEBUG_LOG.debug("Found method {}{}", method.name, method.desc);
+
                 if (methods.contains(target) && (method.access & Opcodes.ACC_ABSTRACT) == 0) {
-                    modified |= invoke(transformer, instance, node, method);
+                    modified |= invoke(transformer, instance, node, method, target);
                 }
             }
 
@@ -172,9 +174,9 @@ public class SolarisTransformer implements ClassFileTransformer {
         TRANSFORMERS.forEach((target, clazz) -> SolarisBootstrap.LOGGER.debug("Registered class transformer {} targeting {}!", clazz.getSimpleName(), target));
     }
 
-    private static boolean invoke(Class<? extends SolarisClassTransformer> transformer, SolarisClassTransformer instance, ClassNode clazz, @Nullable MethodNode method) {
+    private static boolean invoke(Class<? extends SolarisClassTransformer> transformer, SolarisClassTransformer instance, ClassNode clazz, @Nullable MethodNode method, String target) {
         try {
-            Method patcher = transformer.getDeclaredMethod(method == null ? "solaris$metadata" : method.name, method == null ? ClassNode.class : SolarisClassTransformer.TargetData.class);
+            Method patcher = transformer.getDeclaredMethod(target, method == null ? ClassNode.class : SolarisClassTransformer.TargetData.class);
             patcher.setAccessible(true);
 
             Integer hash = null;

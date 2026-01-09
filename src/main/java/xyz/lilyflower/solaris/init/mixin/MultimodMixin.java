@@ -9,6 +9,7 @@ public enum MultimodMixin {
     SoulShot("quiverbow.SoulShotMixin", MixinTarget.QUIVERBOW), // not actually multimod lol, but needs to be here
     LOTRTickHandlerClient("lotr.bug.LOTRTickHandlerClientMixin", Side.CLIENT, MixinTarget.LOTR, MixinTarget.WITCHERY),
     LOTRBiomeVariantStorageShort("lotr.misc.LOTRBiomeVariantStorageShortMixin", Side.CLIENT, MixinTarget.LOTR, MixinTarget.ENDLESSIDS),
+    VoxelMapEndlessIDs("voxelmap.VoxelmapEndlessIDsMixin", Side.CLIENT, MixinTarget.ENDLESSIDS, MixinTarget.VOXELMAP),
 
     ;
 

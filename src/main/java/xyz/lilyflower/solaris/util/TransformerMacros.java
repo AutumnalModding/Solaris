@@ -79,13 +79,26 @@ public class TransformerMacros {
     public static void KillMethodCall(Class<?> clazz, String name, Class<?>[] arguments, InsnList list) {
         list.iterator().forEachRemaining(node -> {
             if (!(node instanceof MethodInsnNode method)) return;
-            if (!CheckMethodCall(clazz, name, arguments, method)) return;
-            Type descriptor = Type.getMethodType(method.desc);
-            for (Type argument : descriptor.getArgumentTypes()) { // no voidtype on the stack!
-                list.insertBefore(method, new InsnNode(Opcodes.SASTORE + argument.getSize()));
+            if (CheckMethodCall(clazz, name, arguments, method)) {
+                Type descriptor = Type.getMethodType(method.desc);
+                for (Type argument : descriptor.getArgumentTypes()) { // no voidtype on the stack!
+                    list.insertBefore(method, new InsnNode(Opcodes.SASTORE + argument.getSize()));
+                }
+                if (method.getOpcode() != Opcodes.INVOKESTATIC) list.insertBefore(method, new InsnNode(Opcodes.POP));
+                if (SolarisBootstrap.DEBUG_ENABLED)
+                    SolarisBootstrap.LOGGER.debug("Killing call to {}#{}{}", method.owner, method.name, method.desc);
+                list.remove(method);
             }
-            if (method.getOpcode() != Opcodes.INVOKESTATIC) list.insertBefore(method, new InsnNode(Opcodes.POP));
-            if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Killing call to {}#{}{}", method.owner, method.name, method.desc);
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void ReplaceMethodCall(Class<?> clazz, String name, Class<?>[] arguments, InsnList list, MethodInsnNode target) {
+        list.iterator().forEachRemaining(node -> {
+            if (!(node instanceof MethodInsnNode method)) return;
+            if (!CheckMethodCall(clazz, name, arguments, method)) return;
+            if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Replacing call to {}#{}{} with call to {}#{}{}", method.owner, method.name, method.desc, target.owner, target.name, target.desc);
+            list.insertBefore(method, target);
             list.remove(method);
         });
     }

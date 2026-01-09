@@ -19,7 +19,8 @@ public enum MixinTarget {
     ADVANCED_ROCKETRY("Advanced Rocketry", "AdvancedRocketry", true),
     AOA("Advent of Ascension", "Nevermine-Tslat", true),
     NTM("HBM's Nuclear Tech Mod", "HBM-NTM-", true),
-    MIXIN_ITSELF("The Mixin Loader Itself", "+unimixins", true)
+    MIXIN_ITSELF("The Mixin Loader Itself", "+unimixins", true),
+    VOXELMAP("VoxelMap", "mod_VoxelMap", true)
 
     ;
 
