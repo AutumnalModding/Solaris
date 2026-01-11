@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import vazkii.botania.common.block.ModBlocks;
 
+@SuppressWarnings("unused")
 public class TeleportTypeLander implements ITeleportType, IExitHeight {
     @Override public boolean useParachute() { return false; }
     @Override public Vector3 getParaChestSpawnLocation(WorldServer server, EntityPlayerMP player, Random random) { return null; }

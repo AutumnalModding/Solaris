@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.specific.nevermine;
+package xyz.lilyflower.solaris.core.transformers.nevermine;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;

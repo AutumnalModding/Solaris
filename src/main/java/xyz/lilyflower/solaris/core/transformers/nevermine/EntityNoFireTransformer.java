@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.specific.nevermine;
+package xyz.lilyflower.solaris.core.transformers.nevermine;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -10,9 +10,9 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.NevermineTransformerSettings;
 
 @SuppressWarnings("unused")
-public class EntityNoMeleeTransformer implements SolarisClassTransformer {
+public class EntityNoFireTransformer implements SolarisClassTransformer {
     void func_70097_a(TargetData data) {
-        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_MELEE) {
+        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_FIRE) {
             InsnList list = new InsnList();
 
             list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -26,10 +26,10 @@ public class EntityNoMeleeTransformer implements SolarisClassTransformer {
     }
 
     void solaris$metadata(ClassNode node) {
-        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_MELEE) node.interfaces.remove(this.internal$transformerTarget());
+        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_FIRE) node.interfaces.remove(this.internal$transformerTarget());
     }
 
     @Override public String internal$transformerTarget() {
-        return "net/nevermine/mob/placement/EntityNoMelee";
+        return "net/nevermine/mob/placement/EntityNoFire";
     }
 }

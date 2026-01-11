@@ -3,6 +3,7 @@ package xyz.lilyflower.solaris.core.settings.modules;
 import xyz.lilyflower.solaris.api.TransformerSettingsModule;
 import xyz.lilyflower.solaris.core.settings.SolarisTransformerSettings;
 
+@SuppressWarnings("unused")
 public class NevermineTransformerSettings implements TransformerSettingsModule {
     public static boolean DISABLE_HUNTER_REQUIREMENTS = true;
     public static boolean ALLOW_ALL = true;

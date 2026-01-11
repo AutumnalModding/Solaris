@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.log;
+package xyz.lilyflower.solaris.core.transformers.fml;
 
 import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;

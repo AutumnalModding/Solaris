@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.init.Solaris;
 
+@SuppressWarnings("unused")
 public enum LoadStage {
     BOOTSTRAP(null), // Construction
     PRELOADER(null), // Pre-Init
@@ -14,8 +15,8 @@ public enum LoadStage {
 
     ;
 
-
-    LoadStage(Class<? extends LoadHelper> clazz) {
+    // TODO: whatever the fuck this was?
+    LoadStage(@SuppressWarnings("SameParameterValue") Class<? extends LoadHelper> clazz) {
         if (clazz == null) return;
         try {
             Constructor<? extends LoadHelper> constructor = clazz.getConstructor();

@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers;
+package xyz.lilyflower.solaris.core.transformers.aetherii;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;

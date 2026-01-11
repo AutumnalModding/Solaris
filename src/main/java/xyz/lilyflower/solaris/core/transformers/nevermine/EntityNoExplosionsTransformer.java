@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.specific.nevermine;
+package xyz.lilyflower.solaris.core.transformers.nevermine;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -10,9 +10,9 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.NevermineTransformerSettings;
 
 @SuppressWarnings("unused")
-public class EntityNoMagicTransformer implements SolarisClassTransformer {
+public class EntityNoExplosionsTransformer implements SolarisClassTransformer {
     void func_70097_a(TargetData data) {
-        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_MAGIC) {
+        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_EXPLOSIONS) {
             InsnList list = new InsnList();
 
             list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -26,10 +26,10 @@ public class EntityNoMagicTransformer implements SolarisClassTransformer {
     }
 
     void solaris$metadata(ClassNode node) {
-        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_MAGIC) node.interfaces.remove(this.internal$transformerTarget());
+        if (NevermineTransformerSettings.ALLOW_ALL || NevermineTransformerSettings.ALLOW_EXPLOSIONS) node.interfaces.remove(this.internal$transformerTarget());
     }
 
     @Override public String internal$transformerTarget() {
-        return "net/nevermine/mob/placement/EntityNoMagic";
+        return "net/nevermine/mob/placement/EntityNoExplosions";
     }
 }

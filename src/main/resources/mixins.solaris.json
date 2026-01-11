@@ -42,6 +42,7 @@
     "rple.OpenLightTEMixin",
     "vanilla.BlockEndPortalMixin",
     "vanilla.EntityLivingBaseMixin",
+    "vanilla.ServerConfigurationManagerMixin",
     "vics.ClientEventHandlerMixin",
     "vics.EntitiesMixin",
     "vics.GrenadeRendererMixin",

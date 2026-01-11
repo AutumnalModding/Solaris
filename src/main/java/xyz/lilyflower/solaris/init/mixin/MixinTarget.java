@@ -20,7 +20,7 @@ public enum MixinTarget {
     AOA("Advent of Ascension", "Nevermine-Tslat", true),
     NTM("HBM's Nuclear Tech Mod", "HBM-NTM-", true),
     MIXIN_ITSELF("The Mixin Loader Itself", "+unimixins", true),
-    VOXELMAP("VoxelMap", "mod_VoxelMap", true)
+    VOXELMAP("VoxelMap", "mod_voxelMap", true)
 
     ;
 

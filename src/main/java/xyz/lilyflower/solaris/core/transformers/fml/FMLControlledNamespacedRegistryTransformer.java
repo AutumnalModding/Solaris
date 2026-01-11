@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.gross.registry;
+package xyz.lilyflower.solaris.core.transformers.fml;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
@@ -6,7 +6,7 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
 
 @SuppressWarnings("unused")
-public class GrossRegistryHacks$FMLControlledNamespacedRegistry implements SolarisClassTransformer {
+public class FMLControlledNamespacedRegistryTransformer implements SolarisClassTransformer {
     void addObjectRaw(TargetData data) {
         if (StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
             data.method().access = Opcodes.ACC_PUBLIC;

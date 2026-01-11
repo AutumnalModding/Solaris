@@ -1,0 +1,3 @@
+[submodule "wavelength"]
+	path = src/main/java/xyz/lilyflower/wavelength
+	url = https://github.com/AutumnalModding/Wavelength

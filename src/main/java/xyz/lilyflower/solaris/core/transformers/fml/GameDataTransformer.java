@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.gross.registry;
+package xyz.lilyflower.solaris.core.transformers.fml;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -14,7 +14,7 @@ import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
 
 @SuppressWarnings("unused")
-public class GrossRegistryHacks$GameData implements SolarisClassTransformer {
+public class GameDataTransformer implements SolarisClassTransformer {
     void addPrefix(TargetData data) {
         if (data.method().access == Opcodes.ACC_PRIVATE && StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
             InsnList insns = new InsnList();

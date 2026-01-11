@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.lilyflower.solaris.configuration.modules.SolarisMW;
 
+@SuppressWarnings("unused")
 @Mixin(WeaponFireAspect.class)
 public class WeaponFireAspectMixin {
     @Shadow(remap = false) private static Predicate<PlayerWeaponInstance> sprinting;

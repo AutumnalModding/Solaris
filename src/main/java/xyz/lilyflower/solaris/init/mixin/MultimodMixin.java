@@ -17,6 +17,7 @@ public enum MultimodMixin {
     public final List<MixinTarget> targets;
     private final Side side;
 
+    @SuppressWarnings("SameParameterValue")
     MultimodMixin(String mixin, Side side, MixinTarget... targets) {
         this.mixin = mixin;
         this.targets = Arrays.asList(targets);

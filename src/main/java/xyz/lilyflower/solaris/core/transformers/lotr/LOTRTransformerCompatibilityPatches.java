@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.bug;
+package xyz.lilyflower.solaris.core.transformers.lotr;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;

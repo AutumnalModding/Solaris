@@ -49,14 +49,13 @@ public class TransformerMacros {
         list.add(new LdcInsnNode((raw ? "" : "$APPLYPREFIX$") + target)); // see GameDataTransformer
     }
 
-    @SuppressWarnings("unused")
     public static void GetStaticField(Class<?> clazz, String name, InsnList list) {
         try {
             String owner = Type.getInternalName(clazz);
             Field field = clazz.getDeclaredField(name);
             String descriptor = Type.getDescriptor(field.getType());
             list.add(new FieldInsnNode(Opcodes.GETSTATIC, owner, name, descriptor));
-        } catch (Throwable exception) {
+        } catch (Exception exception) {
             LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED GETTING FIELD: " + name, exception);
         }
     }
@@ -69,7 +68,7 @@ public class TransformerMacros {
 
             if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Validating {}#{}{} against {}#{}{}", owner, name, descriptor, node.owner, node.name, node.desc);
             return node.owner.equals(owner) && node.desc.equals(descriptor);
-        } catch (Throwable exception) {
+        } catch (Exception exception) {
             LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED VERFIYING CALL: " + name, exception);
         }
 

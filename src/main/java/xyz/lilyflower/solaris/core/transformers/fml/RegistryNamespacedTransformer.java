@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.gross.registry;
+package xyz.lilyflower.solaris.core.transformers.fml;
 
 import org.objectweb.asm.tree.InsnList;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
@@ -6,7 +6,7 @@ import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings
 import xyz.lilyflower.solaris.util.TransformerMacros;
 
 @SuppressWarnings("unused")
-public class GrossRegistryHacks$RegistryNamespaced implements SolarisClassTransformer {
+public class RegistryNamespacedTransformer implements SolarisClassTransformer {
     void addObject(TargetData data) {
         if (StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
             InsnList list = new InsnList();

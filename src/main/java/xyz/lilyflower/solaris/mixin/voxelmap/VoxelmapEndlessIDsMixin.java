@@ -76,8 +76,9 @@ public class VoxelmapEndlessIDsMixin {
             }
         }
     }
-    
+
     @Unique
+    @SuppressWarnings("unused")
     public int solaris$overwriteAtHome(int block, int meta, byte biome) {
         if (this.solaris$minecraft == null) this.solaris$minecraft = Minecraft.getMinecraft();
         WorldClient world = this.solaris$minecraft.theWorld;

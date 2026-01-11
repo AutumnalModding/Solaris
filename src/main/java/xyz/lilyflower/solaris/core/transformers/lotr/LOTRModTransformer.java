@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.specific.lotr;
+package xyz.lilyflower.solaris.core.transformers.lotr;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;

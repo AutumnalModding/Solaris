@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.gross.stability;
+package xyz.lilyflower.solaris.core.transformers.fml;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.StartupQuery;
@@ -8,7 +8,7 @@ import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings
 import xyz.lilyflower.solaris.util.TransformerMacros;
 
 @SuppressWarnings("unused") // "The world state is utterly corrupted" my ass, FML.
-public class GrossStabilityHacks$FMLContainer implements SolarisClassTransformer {
+public class FMLContainerTransformer implements SolarisClassTransformer {
     @Override
     public String internal$transformerTarget() {
         return "cpw/mods/fml/common/FMLContainer";

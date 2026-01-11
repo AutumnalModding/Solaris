@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.bug;
+package xyz.lilyflower.solaris.core.transformers.misc;
 
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 

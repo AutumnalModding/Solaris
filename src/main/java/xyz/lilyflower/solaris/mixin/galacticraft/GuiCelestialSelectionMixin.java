@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
 import xyz.lilyflower.solaris.init.Solaris;
 
-@SuppressWarnings("SameReturnValue")
+@SuppressWarnings({"SameReturnValue", "unused"})
 @Mixin(value = GuiCelestialSelection.class, remap = false)
 public class GuiCelestialSelectionMixin {
     @Shadow protected Object selectedParent;

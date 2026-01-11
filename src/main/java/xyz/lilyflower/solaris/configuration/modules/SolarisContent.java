@@ -3,6 +3,7 @@ package xyz.lilyflower.solaris.configuration.modules;
 import xyz.lilyflower.solaris.api.ConfigurationModule;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
 
+@SuppressWarnings("unused")
 public class SolarisContent implements ConfigurationModule {
     public static boolean ENABLE_CONTENT = false;
     public static String MODPACK_IDENTIFIER = "";

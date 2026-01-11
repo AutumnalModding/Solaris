@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.core.transformers.bug;
+package xyz.lilyflower.solaris.core.transformers.misc;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
