@@ -9,7 +9,7 @@ import xyz.lilyflower.solaris.api.ContentRegistry;
 import xyz.lilyflower.solaris.util.ClasspathScanning;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 
-public class SolarisRegistry {
+public class SolarisRegistryLoader {
     public static final Logger LOGGER = LogManager.getLogger("Solaris Registry");
 
     @SuppressWarnings({"rawtypes", "unchecked"})

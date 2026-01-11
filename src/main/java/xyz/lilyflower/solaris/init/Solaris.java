@@ -30,17 +30,15 @@ import xyz.lilyflower.solaris.api.LoadStage;
 import xyz.lilyflower.solaris.configuration.SolarisConfigurationLoader;
 import xyz.lilyflower.solaris.configuration.modules.SolarisAether;
 import xyz.lilyflower.solaris.configuration.modules.SolarisLOTR;
-import xyz.lilyflower.solaris.content.SolarisRegistry;
+import xyz.lilyflower.solaris.content.SolarisRegistryLoader;
 import xyz.lilyflower.solaris.command.LTRDebuggerCommand;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.integration.galacticraft.PlanetParser;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 import xyz.lilyflower.solaris.util.ClasspathScanning;
 
-@Mod(modid = Solaris.MODID, version = Solaris.VERSION, dependencies = "before:GalacticraftCore;after:lotr")
+@Mod(modid = "solaris", version = "3.0", dependencies = "before:GalacticraftCore;after:lotr")
 public class Solaris {
-    public static final String VERSION = "3.0";
-    public static final String MODID = "solaris";
     public static LoadStage STATE = LoadStage.BOOTSTRAP;
 
     public static final Logger LOGGER = LogManager.getLogger("Solaris");
@@ -65,7 +63,7 @@ public class Solaris {
     public void construction(FMLConstructionEvent event) {
         STATE = LoadStage.BOOTSTRAP;
         __INIT_MODULE(CustomDataLoader.class);
-        SolarisRegistry.initialize();
+        SolarisRegistryLoader.initialize();
         SolarisIntegrationModule.execute();
     }
 
@@ -74,7 +72,7 @@ public class Solaris {
         STATE = LoadStage.PRELOADER;
         __INIT_MODULE(ConfigurationModule.class);
         SolarisConfigurationLoader.load(new File("config/solaris/"));
-        SolarisRegistry.initialize();
+        SolarisRegistryLoader.initialize();
         SolarisIntegrationModule.execute();
     }
 
@@ -88,7 +86,7 @@ public class Solaris {
             OreDictionary.registerOre("nuggetMithril", LOTRMod.mithrilNugget);
         }
 
-        SolarisRegistry.initialize();
+        SolarisRegistryLoader.initialize();
         if (Loader.isModLoaded("GalacticraftCore")) { SolarisIntegrationModule.add(new PlanetParser(), true); }
         SolarisIntegrationModule.execute();
     }
@@ -124,7 +122,7 @@ public class Solaris {
             }
         }
 
-        SolarisRegistry.initialize();
+        SolarisRegistryLoader.initialize();
         SolarisIntegrationModule.execute();
     }
 
@@ -132,7 +130,7 @@ public class Solaris {
     public void serverStarting(FMLServerStartingEvent event) {
         STATE = LoadStage.SPINUP;
         if (Loader.isModLoaded("lotr")) event.registerServerCommand(new LTRDebuggerCommand());
-        SolarisRegistry.initialize();
+        SolarisRegistryLoader.initialize();
         SolarisIntegrationModule.execute();
     }
 }

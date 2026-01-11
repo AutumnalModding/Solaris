@@ -16,7 +16,7 @@ import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings
 @SuppressWarnings("unused")
 public class GameDataTransformer implements SolarisClassTransformer {
     void addPrefix(TargetData data) {
-        if (data.method().access == Opcodes.ACC_PRIVATE && StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
+        if (data.method().access == Opcodes.ACC_PRIVATE) {
             InsnList insns = new InsnList();
             LabelNode jump = new LabelNode(new Label());
 
