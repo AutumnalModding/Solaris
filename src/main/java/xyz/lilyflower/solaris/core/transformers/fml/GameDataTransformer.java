@@ -1,5 +1,6 @@
 package xyz.lilyflower.solaris.core.transformers.fml;
 
+import cpw.mods.fml.common.FMLLog;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -12,6 +13,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
+import xyz.lilyflower.solaris.util.TransformerMacros;
 
 @SuppressWarnings("unused")
 public class GameDataTransformer implements SolarisClassTransformer {
@@ -42,21 +44,29 @@ public class GameDataTransformer implements SolarisClassTransformer {
     }
 
     void registerItem(TargetData data) {
-        if (data.method().access == Opcodes.ACC_PRIVATE && StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
-            InsnList list = new InsnList();
-            LabelNode jump = new LabelNode(new Label());
+        TransformerMacros.KillMethodCall(FMLLog.class, "bigWarning", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
+        if (data.method().access == Opcodes.ACC_PRIVATE) {
+            if (StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
+                InsnList list = new InsnList();
+                LabelNode jump = new LabelNode(new Label());
 
-            list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-            list.add(new JumpInsnNode(Opcodes.IFLT, jump));
-            list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-            list.add(new FieldInsnNode(Opcodes.GETFIELD, "cpw/mods/fml/common/registry/GameData", "availabilityMap", "Ljava/util/BitSet;"));
-            list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-            list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/util/BitSet", "clear", "(I)V", false));
-            list.add(jump);
+                list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+                list.add(new JumpInsnNode(Opcodes.IFLT, jump));
+                list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                list.add(new FieldInsnNode(Opcodes.GETFIELD, "cpw/mods/fml/common/registry/GameData", "availabilityMap", "Ljava/util/BitSet;"));
+                list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+                list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/util/BitSet", "clear", "(I)V", false));
+                list.add(jump);
 
-            data.method().instructions.insert(list);
+                data.method().instructions.insert(list);
+            }
         }
 
+        data.method().access = Opcodes.ACC_PUBLIC;
+    }
+
+    void registerBlock(TargetData data) {
+        TransformerMacros.KillMethodCall(FMLLog.class, "bigWarning", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
         data.method().access = Opcodes.ACC_PUBLIC;
     }
 

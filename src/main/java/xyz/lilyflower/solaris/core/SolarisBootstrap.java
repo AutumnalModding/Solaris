@@ -83,13 +83,13 @@ public class SolarisBootstrap implements IFMLLoadingPlugin {
             ); // <-- DEFAULT, minus JNA.
             Instrumentation agent = ByteBuddyAgent.install(provider);
             agent.addTransformer(transformer, true);
-        } catch (ExceptionInInitializerError error) {
+        } catch (ExceptionInInitializerError | IllegalStateException error) {
             LOGGER.error("Failed to initialize agent with the standard method. Trying JNA. This might crash on Windows!");
             try {
-                Class.forName("com.sun.jna.Native"); // Last resort - will sometimes fail on Windows.
+                Class.forName("com.sun.jna.Native");
                 Instrumentation agent = ByteBuddyAgent.install(ByteBuddyAgent.AttachmentProvider.ForEmulatedAttachment.INSTANCE);
                 agent.addTransformer(transformer, true);
-            } catch (ExceptionInInitializerError | UnsatisfiedLinkError | ClassNotFoundException failure) {
+            } catch (ExceptionInInitializerError | IllegalStateException | UnsatisfiedLinkError | ClassNotFoundException failure) {
                 LoggingHelper.oopsie(LOGGER, "Failed to initialize agent, running in mixin-only mode - try running with a Java 8 JDK.", failure);
             }
         }
