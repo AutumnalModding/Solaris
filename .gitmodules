@@ -1,9 +1,0 @@
-[submodule "wavelength"]
-	path = src/main/java/xyz/lilyflower/wavelength
-	url = https://github.com/AutumnalModding/Wavelength
-	branch = main
-
-[submodule "wavelength-resources"]
-	path = src/main/resources/assets/wavelength
-	url = https://github.com/AutumnalModding/Wavelength
-	branch = resources
