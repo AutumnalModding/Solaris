@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import xyz.lilyflower.solaris.configuration.modules.SolarisMW;
-import xyz.lilyflower.solaris.util.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformerMacros;
 
 @Mixin(ClientEventHandler.class)
 public class ClientEventHandlerMixin {

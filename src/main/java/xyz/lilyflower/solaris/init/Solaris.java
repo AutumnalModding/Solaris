@@ -32,10 +32,12 @@ import xyz.lilyflower.solaris.configuration.modules.SolarisAether;
 import xyz.lilyflower.solaris.configuration.modules.SolarisLOTR;
 import xyz.lilyflower.solaris.content.SolarisRegistryLoader;
 import xyz.lilyflower.solaris.command.LTRDebuggerCommand;
+import xyz.lilyflower.solaris.core.SolarisBootstrap;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.integration.galacticraft.PlanetParser;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 import xyz.lilyflower.solaris.util.ClasspathScanning;
+import xyz.lilyflower.solaris.util.InvertedList;
 
 @Mod(modid = "solaris", version = "3.0", dependencies = "before:GalacticraftCore;after:lotr")
 public class Solaris {
@@ -107,16 +109,51 @@ public class Solaris {
                 possible.setAccessible(true);
                 ArrayList<ItemStack> list = (ArrayList<ItemStack>) possible.get(null);
                 list.clear();
+
+                ArrayList<ItemStack> items = new ArrayList<>();
+                ArrayList<ItemStack> blocks = new ArrayList<>();
+
                 for (Object obj : Item.itemRegistry) {
-                    list.add(new ItemStack((Item) obj));
+                    Item item = (Item) obj;
+                    try {
+                        item.getSubItems(item, null, items);
+                    } catch (Exception exception) {
+                        ItemStack stack = new ItemStack(item, 0);
+                        LOGGER.warn("Failed getting variants for item {} (\"{}\") of type {}! (Reason: {}: {})",
+                                item.getUnlocalizedName(),
+                                item.getItemStackDisplayName(stack),
+                                item.getClass().getName(),
+                                exception.getClass().getName(),
+                                exception.getMessage()
+                        );
+                        items.add(stack);
+                    }
                 }
 
                 for (Object obj : Block.blockRegistry) {
-                    list.add(new ItemStack(Item.getItemFromBlock((Block) obj)));
+                    Block block = (Block) obj;
+                    Item item = Item.getItemFromBlock(block);
+                    try {
+                        if (item != null) {
+                            item.getSubItems(item, null, blocks);
+                        }
+                    } catch (Exception exception) {
+                        LOGGER.warn("Failed getting variants for block {} (\"{}\") of type {}! (Reason: {}: {})",
+                                block.getUnlocalizedName(),
+                                block.getLocalizedName(),
+                                block.getClass().getName(),
+                                exception.getClass().getName(),
+                                exception.getMessage()
+                        );
+                        blocks.add(new ItemStack(item, 0));
+                    }
                 }
 
+                list.addAll(items);
+                list.addAll(blocks);
+
                 possible.set(null, list);
-                Solaris.LOGGER.info("Found {} items, {} blocks. {} possible Continuum Orb items. Happy gambling!", Item.itemRegistry.getKeys().size(), Block.blockRegistry.getKeys().size(), list.size());
+                Solaris.LOGGER.info("Found {} items, {} blocks. {} possible Continuum Orb items. Happy gambling!", items.size(), blocks.size(), list.size());
             } catch (NoSuchFieldException | IllegalAccessException exception) {
                 throw new RuntimeException(exception);
             }
@@ -124,6 +161,20 @@ public class Solaris {
 
         SolarisRegistryLoader.initialize();
         SolarisIntegrationModule.execute();
+
+        if (Loader.isModLoaded("tropicraft")) {
+            try {
+                Class<?> that = Class.forName("net.tropicraft.config.ConfigMisc");
+                Field field = that.getDeclaredField("coconutBombWhitelistedUsers");
+                field.setAccessible(true);
+                InvertedList<String> list = new InvertedList<>();
+                List<String> old = (List<String>) field.get(null);
+                list.addAll(old);
+                field.set(null, list);
+            } catch (ReflectiveOperationException exception) {
+                LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "Failed to invert Tropicraft's coconut bomb whitelist.", exception);
+            }
+        }
     }
 
     @EventHandler

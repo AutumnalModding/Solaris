@@ -1,6 +1,9 @@
 package xyz.lilyflower.solaris.mixin.bandaid;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.IntHashMap;
@@ -15,16 +18,29 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(WorldServer.class)
+@Mixin(WorldServer.class) // not in decomp fsr?
+@SuppressWarnings("JavaReflectionMemberAccess")
 public class WorldServerMixin {
     @Shadow private IntHashMap entityIdMap;
 
+    @SuppressWarnings("rawtypes")//generics aren't real and cannot hurt you
     @Inject(method = "onEntityAdded", at = @At("HEAD"), cancellable = true)
     public void fixNulls(Entity entity, CallbackInfo info) {
-        if (this.entityIdMap == null) {
-            this.entityIdMap = new IntHashMap();
-        }
         if (entity == null) info.cancel();
+        if (this.entityIdMap == null) this.entityIdMap = new IntHashMap();
+
+        // IDEA only warns when in the try block? weird.
+        WorldServer world = (WorldServer) (Object) this;
+        try {
+            Class<WorldServer> clazz = WorldServer.class;
+            Field field = clazz.getDeclaredField("entitiesByUuid");
+            field.setAccessible(true);
+            Map map = (Map) field.get(world);
+            if (map == null) {
+                map = new HashMap();
+                field.set(world, map);
+            }
+        } catch (ReflectiveOperationException ignored) {}
     }
 
     /**

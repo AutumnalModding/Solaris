@@ -3,7 +3,7 @@ package xyz.lilyflower.solaris.core.transformers.fml;
 import org.objectweb.asm.tree.InsnList;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
-import xyz.lilyflower.solaris.util.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformerMacros;
 
 @SuppressWarnings("unused")
 public class RegistryNamespacedTransformer implements SolarisClassTransformer {

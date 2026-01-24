@@ -4,7 +4,7 @@ import com.falsepattern.endlessids.mixin.helpers.LOTRBiomeVariantStorageShort;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import xyz.lilyflower.solaris.util.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformerMacros;
 
 @SuppressWarnings("UnusedMixin")
 @Mixin(value = LOTRBiomeVariantStorageShort.class, priority = 1500, remap = false)

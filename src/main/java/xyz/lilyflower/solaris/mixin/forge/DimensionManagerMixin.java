@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.lilyflower.solaris.configuration.modules.SolarisVanilla;
-import xyz.lilyflower.solaris.util.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformerMacros;
 
 @Mixin(value = DimensionManager.class, remap = false)
 public class DimensionManagerMixin {

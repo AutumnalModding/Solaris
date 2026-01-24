@@ -2,6 +2,7 @@ package xyz.lilyflower.solaris.content.registry;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.item.Item;
 import xyz.lilyflower.solaris.api.LoadStage;
 import xyz.lilyflower.solaris.configuration.modules.SolarisContent;
@@ -13,11 +14,12 @@ public class ItemRegistry implements ContentRegistry<Item> {
     static final ArrayList<SolarisExtensions.Pair<Item, String>> ITEMS = new ArrayList<>();
 
     @Override
-    public ArrayList<SolarisExtensions.Pair<Item, String>> contents() {
+    public List<SolarisExtensions.Pair<Item, String>> contents() {
         return ITEMS;
     }
 
-    public static final Item STONE_DUST = ContentRegistry.create("dust_stone", Item.class, new Class<?>[]{}, ITEMS);
+    public static final Item STONE_DUST = ContentRegistry.create("dust_stone", Item.class, ContentRegistry.EMPTY, ITEMS);
+    public static final Item CHEAP_PLASTIC_PANEL = ContentRegistry.create("plp_cheap", Item.class, ContentRegistry.EMPTY, ITEMS);
 
     @Override
     public void register(SolarisExtensions.Pair<Item, String> pair) {

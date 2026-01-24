@@ -3,7 +3,7 @@ package xyz.lilyflower.solaris.core.transformers.fml;
 import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
-import xyz.lilyflower.solaris.util.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformerMacros;
 
 @SuppressWarnings("unused")
 public class LogShutterUpperTransformers {

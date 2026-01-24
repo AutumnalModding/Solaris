@@ -5,7 +5,7 @@ import cpw.mods.fml.common.StartupQuery;
 import org.apache.logging.log4j.Level;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
-import xyz.lilyflower.solaris.util.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformerMacros;
 
 @SuppressWarnings("unused") // "The world state is utterly corrupted" my ass, FML.
 public class FMLContainerTransformer implements SolarisClassTransformer {

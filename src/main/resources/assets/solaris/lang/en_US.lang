@@ -18,6 +18,7 @@ item.solaris.mithril_robe_legs.name=Mithril-trimmed Thaumaturge's Leggings
 item.solaris.mithril_robe_boots.name=Mithril-trimmed Thaumaturge's Boots
 
 item.solaris.dust_stone.name=Stone Dust
+item.solaris.plp_cheap.name=Cheap Plastic Panels
 
 solaris.invalid_spawn_egg.1=Sorry! It seems this mob isn't yet supported by the Soul Cairn.
 solaris.invalid_spawn_egg.2=Here's your diamond back - open an issue on the Github at:
@@ -29,3 +30,4 @@ solarsystem.solaris$alpha=Solaris Alpha
 
 subtitle.game.player.die=Player dies
 subtitle.weather.rain.above=Rain
+subtitle.mob.zombiepig.zpig=Zombie Pigman mumbles

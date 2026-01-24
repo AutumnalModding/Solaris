@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util;
+package xyz.lilyflower.solaris.core;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import java.lang.reflect.Field;
@@ -15,7 +15,6 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import xyz.lilyflower.solaris.core.SolarisBootstrap;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 
 public class TransformerMacros {
