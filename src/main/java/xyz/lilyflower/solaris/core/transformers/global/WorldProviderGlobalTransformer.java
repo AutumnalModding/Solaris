@@ -18,6 +18,7 @@ import xyz.lilyflower.solaris.core.SolarisBootstrap;
 import xyz.lilyflower.solaris.core.settings.modules.VanillaTransformerSettings;
 import xyz.lilyflower.solaris.init.Solaris;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
+import xyz.lilyflower.solaris.util.data.Pair;
 
 @SuppressWarnings("unused")
 public class WorldProviderGlobalTransformer implements SolarisGlobalTransformer {
@@ -31,15 +32,6 @@ public class WorldProviderGlobalTransformer implements SolarisGlobalTransformer 
     }
 
     static void invoke(SolarisClassTransformer.TargetData data) {
-        Consumer<Consumer<Function<String, Consumer<BiFunction<String, Function<String, Integer>, SolarisExtensions.Pair<String, BiConsumer<Float, Float>>>>>>> fuckass = why -> {
-            why.accept(string -> {
-                return thisFuckingThing -> {
-                    thisFuckingThing.apply("valid", atAll -> {
-                        return 420;
-                    }).right().accept(5.0F, 2.0F);
-                };
-            });
-        };
         AbstractInsnNode node = data.method().instructions.getFirst();
         InsnList list = new InsnList();
         if (node instanceof InsnNode concrete && concrete.getOpcode() == Opcodes.ICONST_0 || node instanceof LabelNode && node.getNext() instanceof LineNumberNode || node == null) {
