@@ -5,11 +5,11 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 
 public class ExactCoordinatesTeleporter extends Teleporter {
-    private final int x;
-    private final int y;
-    private final int z;
+    private final double x;
+    private final double y;
+    private final double z;
 
-    public ExactCoordinatesTeleporter(WorldServer world, int x, int y, int z) {
+    public ExactCoordinatesTeleporter(WorldServer world, double x, double y, double z) {
         super(world);
         this.x = x;
         this.y = y;

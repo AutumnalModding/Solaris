@@ -1,7 +1,6 @@
 package xyz.lilyflower.solaris.mixin.voxelmap;
 
 import com.falsepattern.endlessids.mixin.helpers.ChunkBiomeHook;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import net.minecraft.block.Block;
@@ -19,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 
 @Pseudo
+@SuppressWarnings("UnresolvedMixinReference")
 @Mixin(targets = "com.thevoxelbox.voxelmap.a", remap = false)
 public class VoxelmapEndlessIDsMixin {
     @Unique private Minecraft solaris$minecraft;
@@ -36,7 +36,7 @@ public class VoxelmapEndlessIDsMixin {
     }
 
     @Unique
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings("ConstantConditions")
     public void solaris$overwriteAtHome(int block, int meta) {
         if (this.solaris$minecraft == null) this.solaris$minecraft = Minecraft.getMinecraft();
         WorldClient world = this.solaris$minecraft.theWorld;

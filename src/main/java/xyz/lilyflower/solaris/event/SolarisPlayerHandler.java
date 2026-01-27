@@ -13,7 +13,7 @@ import net.minecraft.world.WorldType;
 import net.minecraftforge.common.DimensionManager;
 import xyz.lilyflower.solaris.configuration.modules.SolarisContent;
 import xyz.lilyflower.solaris.init.Solaris;
-import xyz.lilyflower.solaris.util.SolarisExtensions;
+import xyz.lilyflower.solaris.util.data.TriPair;
 import xyz.lilyflower.solaris.world.DimensionalWorldType;
 import xyz.lilyflower.solaris.world.DirectTeleporter;
 import xyz.lilyflower.solaris.world.ExactCoordinatesTeleporter;
@@ -30,7 +30,7 @@ public class SolarisPlayerHandler {
             if (type instanceof DimensionalWorldType dimensional && player.dimension == 0) {
                 WorldServer there = DimensionManager.getWorld(dimensional.dimension);
                 WorldProvider that = there.provider;
-                SolarisExtensions.TriPair<Integer, Integer, Integer> location = SolarisContent.COORDINATES.get(dimensional.dimension);
+                TriPair<Double, Double, Double> location = SolarisContent.COORDINATES.get(dimensional.dimension);
                 Teleporter teleporter = location != null ?
                         new ExactCoordinatesTeleporter(there, location.left(), location.middle(), location.right()) :
                         new DirectTeleporter(there);

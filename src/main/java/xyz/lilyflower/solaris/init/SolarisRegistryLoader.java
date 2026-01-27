@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.lilyflower.solaris.api.ContentRegistry;
+import xyz.lilyflower.solaris.util.data.Pair;
 import xyz.lilyflower.solaris.util.reflect.ClasspathScanning;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 
@@ -22,7 +23,7 @@ public class SolarisRegistryLoader {
                 if (registry.runnable()) {
                     LOGGER.info("Executing content registry {}!", clazz.getName());
                     registry.contents().forEach(pair -> {
-                        SolarisExtensions.Pair<?, String> content = (SolarisExtensions.Pair<?, String>) pair;
+                        Pair<?, String> content = (Pair<?, String>) pair;
                         if (registry.valid(content.right())) {
                             registry.register(content);
                             LOGGER.debug("Registering key {} on {}", content.right(), clazz.getName());
