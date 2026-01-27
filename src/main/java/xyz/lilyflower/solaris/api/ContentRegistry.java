@@ -2,10 +2,9 @@ package xyz.lilyflower.solaris.api;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import xyz.lilyflower.solaris.content.SolarisRegistryLoader;
+import xyz.lilyflower.solaris.init.SolarisRegistryLoader;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 

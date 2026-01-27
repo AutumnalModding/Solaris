@@ -13,7 +13,7 @@ import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraftforge.common.util.EnumHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xyz.lilyflower.solaris.util.EnumHelperMappings;
+import xyz.lilyflower.solaris.util.reflect.EnumHelperMappings;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 
 @SuppressWarnings({"ConstantConditions", "unused"})

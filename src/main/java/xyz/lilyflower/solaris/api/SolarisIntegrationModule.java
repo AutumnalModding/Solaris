@@ -22,7 +22,7 @@ public interface SolarisIntegrationModule {
             StringBuilder name = new StringBuilder();
             boolean valid = loader.valid();
             for (String mod : loader.requiredMods()) { // Won't work in FMLConstruction
-                if (!Loader.isModLoaded(mod) && Solaris.STATE != LoadStage.BOOTSTRAP) {
+                if (!Loader.isModLoaded(mod) && Solaris.STAGE != LoadStage.BOOTSTRAP) {
                     valid = false;
                     break;
                 } else {

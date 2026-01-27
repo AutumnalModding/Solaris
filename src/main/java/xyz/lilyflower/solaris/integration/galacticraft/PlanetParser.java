@@ -20,6 +20,7 @@ import xyz.lilyflower.solaris.api.SolarisIntegrationModule;
 import xyz.lilyflower.solaris.configuration.modules.SolarisGalacticraft;
 import xyz.lilyflower.solaris.init.Solaris;
 import xyz.lilyflower.solaris.internal.SolarisClassloader;
+import xyz.lilyflower.solaris.util.list.ChainedArrayList;
 import xyz.lilyflower.solaris.util.data.Colour;
 import xyz.lilyflower.solaris.util.data.TypedParam;
 import xyz.lilyflower.solaris.util.json.ClassTypeAdapter;
@@ -33,12 +34,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import xyz.lilyflower.solaris.util.json.TypedParamAdapter;
+import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 
 public class PlanetParser implements SolarisIntegrationModule {
     public static final HashSet<Star> STARS = new HashSet<>();
@@ -100,22 +101,20 @@ public class PlanetParser implements SolarisIntegrationModule {
                 node.accept(writer);
                 byte[] bytes = writer.toByteArray();
 
-                Class<SolarisClassloader> loader = SolarisClassloader.class;
-                Field field = loader.getDeclaredField("INSTANCE");
-                field.setAccessible(true);
-                SolarisClassloader instance = (SolarisClassloader) field.get(null);
+
+                SolarisClassloader instance = SolarisReflection.get(SolarisClassloader.class, "INSTANCE");
                 Class<? extends PlanetProvider> clazz = (Class<? extends PlanetProvider>) instance.load(node.name, bytes);
                 Constructor<? extends PlanetProvider> constructor = clazz.getConstructor(PlanetData.class);
                 PlanetProvider provider = constructor.newInstance(data);
                 Solaris.LOGGER.info("Registering planet {}!", data.name());
                 provider.register();
-            } catch (IOException | IllegalArgumentException | NoSuchFieldException | IllegalAccessException |
+            } catch (IOException | IllegalArgumentException | IllegalAccessException |
                      NoSuchMethodException | InstantiationException | InvocationTargetException exception) {
                 throw new RuntimeException(exception);
             }
         }
     }
 
-    @Override public boolean valid() { return Solaris.STATE == LoadStage.RUNNING; }
-    @Override public List<String> requiredMods() { return Arrays.asList("GalacticraftCore"); }
+    @Override public boolean valid() { return Solaris.STAGE == LoadStage.RUNNING; }
+    @Override public List<String> requiredMods() { return new ChainedArrayList<String>().chain("GalacticraftCore"); }
 }

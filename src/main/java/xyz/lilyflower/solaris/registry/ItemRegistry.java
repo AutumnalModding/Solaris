@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.content.registry;
+package xyz.lilyflower.solaris.registry;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.ArrayList;
@@ -36,6 +36,6 @@ public class ItemRegistry implements ContentRegistry<Item> {
 
     @Override
     public boolean runnable() {
-        return Solaris.STATE == LoadStage.PRELOADER;
+        return Solaris.STAGE == LoadStage.PRELOADER;
     }
 }

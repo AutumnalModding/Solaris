@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 
 @Pseudo
 @Mixin(targets = "com.thevoxelbox.voxelmap.a", remap = false)
@@ -66,14 +67,9 @@ public class VoxelmapEndlessIDsMixin {
                 hook.setBiomeShortArray(biomes);
                 chunk.func_150807_a(targetX & 15, 0, targetZ & 15, there, that);
                 int shifted = block + (meta << 12);
-                try {
-                    Class clazz = this.getClass();
-                    Field field = clazz.getDeclaredField("break");
-                    field.setAccessible(true);
-                    HashMap<Integer, Integer[]> map = (HashMap<Integer, Integer[]>) field.get(this);
-                    map.put(shifted, array);
-                    field.set(this, map);
-                } catch (ReflectiveOperationException ignored) {}
+                HashMap<Integer, Integer[]> map = SolarisReflection.get("com.thevoxelbox.voxelmap.a", "break", this);
+                map.put(shifted, array);
+                SolarisReflection.set("com.thevoxelbox.voxelmap.a", "break", this, map);
             }
         }
     }

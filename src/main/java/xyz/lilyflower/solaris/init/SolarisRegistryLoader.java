@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.content;
+package xyz.lilyflower.solaris.init;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.lilyflower.solaris.api.ContentRegistry;
-import xyz.lilyflower.solaris.util.ClasspathScanning;
+import xyz.lilyflower.solaris.util.reflect.ClasspathScanning;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 
 public class SolarisRegistryLoader {

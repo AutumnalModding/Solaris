@@ -32,7 +32,7 @@ import java.lang.instrument.ClassFileTransformer;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import java.lang.reflect.InvocationTargetException;
-import xyz.lilyflower.solaris.util.ClasspathScanning;
+import xyz.lilyflower.solaris.util.reflect.ClasspathScanning;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.api.SolarisGlobalTransformer;
 

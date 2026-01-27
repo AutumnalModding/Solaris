@@ -21,7 +21,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import xyz.lilyflower.solaris.api.TransformerSettingsModule;
 import xyz.lilyflower.solaris.core.settings.SolarisTransformerSettings;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
-import xyz.lilyflower.solaris.util.ClasspathScanning;
+import xyz.lilyflower.solaris.util.reflect.ClasspathScanning;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
 
 @SuppressWarnings("unused")

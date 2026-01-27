@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.lilyflower.solaris.util.data.AREnhancedPlanetProperties;
+import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 import zmaster587.advancedRocketry.AdvancedRocketry;
 import zmaster587.advancedRocketry.api.IAtmosphere;
 import zmaster587.advancedRocketry.atmosphere.AtmosphereType;
@@ -39,11 +40,7 @@ public class DimensionPropertiesMixin implements AREnhancedPlanetProperties {
     @Override
     public void solaris$defined(String name) {
         this.solaris$defined = name;
-        try {
-            this.solaris$direct = (IAtmosphere) AtmosphereType.class.getDeclaredField(name).get(null);
-        } catch (NoSuchFieldException | IllegalAccessException exception) {
-            AdvancedRocketry.logger.warn("Invalid atmosphere type '{}'", name);
-        }
+        this.solaris$direct = SolarisReflection.get(AtmosphereType.class, name);
     }
 
     @Inject(method = "readFromNBT", at = @At("TAIL"), remap = false)

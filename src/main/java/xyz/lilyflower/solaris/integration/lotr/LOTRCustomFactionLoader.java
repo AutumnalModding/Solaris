@@ -21,7 +21,7 @@ import lotr.common.fac.LOTRMapRegion;
 import lotr.common.world.map.LOTRWaypoint;
 import net.minecraftforge.common.util.EnumHelper;
 import xyz.lilyflower.solaris.init.Solaris;
-import xyz.lilyflower.solaris.util.EnumHelperMappings;
+import xyz.lilyflower.solaris.util.reflect.EnumHelperMappings;
 import xyz.lilyflower.solaris.api.CustomDataLoader;
 
 @SuppressWarnings({"ConstantConditions", "unused"})

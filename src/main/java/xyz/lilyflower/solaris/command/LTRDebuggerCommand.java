@@ -10,7 +10,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
-import xyz.lilyflower.solaris.util.ClasspathScanning;
+import xyz.lilyflower.solaris.util.reflect.ClasspathScanning;
 
 public class LTRDebuggerCommand extends CommandBase {
     @Override

@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 
 @Mixin(WorldServer.class) // not in decomp fsr?
 @SuppressWarnings("JavaReflectionMemberAccess")
@@ -31,16 +32,11 @@ public class WorldServerMixin {
 
         // IDEA only warns when in the try block? weird.
         WorldServer world = (WorldServer) (Object) this;
-        try {
-            Class<WorldServer> clazz = WorldServer.class;
-            Field field = clazz.getDeclaredField("entitiesByUuid");
-            field.setAccessible(true);
-            Map map = (Map) field.get(world);
-            if (map == null) {
-                map = new HashMap();
-                field.set(world, map);
-            }
-        } catch (ReflectiveOperationException ignored) {}
+        Map map = SolarisReflection.get(WorldServer.class, "entitiesByUuid", world);
+        if (map == null) {
+            map = new HashMap();
+            SolarisReflection.set(WorldServer.class, "entitiesByUuid", world, map);
+        }
     }
 
     /**

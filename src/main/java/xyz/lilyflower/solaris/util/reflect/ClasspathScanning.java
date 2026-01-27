@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util;
+package xyz.lilyflower.solaris.util.reflect;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;

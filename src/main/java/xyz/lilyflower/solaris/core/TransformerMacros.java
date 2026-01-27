@@ -16,6 +16,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
+import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 
 public class TransformerMacros {
     @SuppressWarnings("unused")
@@ -115,13 +116,7 @@ public class TransformerMacros {
             return;
         }
 
-        try { // we have to call directly because of FML shenanigans
-            Class<?> internal = Class.forName("java.lang.Shutdown");
-            Method halt = internal.getDeclaredMethod("halt0", int.class);
-            halt.setAccessible(true);
-            halt.invoke(null, code);
-        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException exception) {
-            throw new RuntimeException("Failed to kill the JVM - you're on your own!");
-        }
+        // FML is so dumb.
+        SolarisReflection.invoke("java.lang.Shutdown", "halt0", code);
     }
 }

@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util;
+package xyz.lilyflower.solaris.util.reflect;
 
 import java.util.EnumSet;
 import lotr.common.LOTRDimension;

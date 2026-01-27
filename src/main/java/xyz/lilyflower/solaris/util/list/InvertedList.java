@@ -1,4 +1,4 @@
-package xyz.lilyflower.solaris.util;
+package xyz.lilyflower.solaris.util.list;
 
 import java.util.ArrayList;
 
