@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.lilyflower.solaris.init.SolarisRegistryLoader;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
+import xyz.lilyflower.solaris.util.data.Pair;
 
 @SuppressWarnings("unused")
 public interface ContentRegistry<T> {
@@ -14,11 +15,11 @@ public interface ContentRegistry<T> {
 
     @NotNull // it's only null if it throws
     @SuppressWarnings("SameParameterValue")
-    static <T> T create(String name, Class<? extends T> clazz, Class<?>[] types, List<SolarisExtensions.Pair<T, String>> contents, Object... arguments) {
+    static <T> T create(String name, Class<? extends T> clazz, Class<?>[] types, List<Pair<T, String>> contents, Object... arguments) {
         try {
             Constructor<? extends T> constructor = clazz.getConstructor(types);
             T instance = constructor.newInstance(arguments);
-            contents.add(new SolarisExtensions.Pair<>(instance, name));
+            contents.add(new Pair<>(instance, name));
             return instance;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException exception) {
             LoggingHelper.oopsie(SolarisRegistryLoader.LOGGER, "FAILED INITIALIZING OBJECT CLASS: " + clazz.getName(), exception);
@@ -26,8 +27,8 @@ public interface ContentRegistry<T> {
         }
     }
 
-    List<SolarisExtensions.Pair<T, String>> contents();
-    void register(SolarisExtensions.Pair<T, String> pair);
+    List<Pair<T, String>> contents();
+    void register(Pair<T, String> pair);
     boolean valid(String key);
     boolean runnable();
 }

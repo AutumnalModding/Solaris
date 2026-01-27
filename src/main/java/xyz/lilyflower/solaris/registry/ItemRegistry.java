@@ -9,12 +9,13 @@ import xyz.lilyflower.solaris.configuration.modules.SolarisContent;
 import xyz.lilyflower.solaris.api.ContentRegistry;
 import xyz.lilyflower.solaris.init.Solaris;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
+import xyz.lilyflower.solaris.util.data.Pair;
 
 public class ItemRegistry implements ContentRegistry<Item> {
-    static final ArrayList<SolarisExtensions.Pair<Item, String>> ITEMS = new ArrayList<>();
+    static final ArrayList<Pair<Item, String>> ITEMS = new ArrayList<>();
 
     @Override
-    public List<SolarisExtensions.Pair<Item, String>> contents() {
+    public List<Pair<Item, String>> contents() {
         return ITEMS;
     }
 
@@ -22,7 +23,7 @@ public class ItemRegistry implements ContentRegistry<Item> {
     public static final Item CHEAP_PLASTIC_PANEL = ContentRegistry.create("plp_cheap", Item.class, ContentRegistry.EMPTY, ITEMS);
 
     @Override
-    public void register(SolarisExtensions.Pair<Item, String> pair) {
+    public void register(Pair<Item, String> pair) {
         pair.left().setUnlocalizedName("solaris." + pair.right());
         pair.left().setTextureName("solaris:" + pair.right());
 

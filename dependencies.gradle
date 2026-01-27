@@ -30,7 +30,6 @@ dependencies {
     compileOnly deobfCurse("endlessids-665730:5548668")
     compileOnly deobfCurse("openlights-225225:2264437")
     compileOnly deobfCurse("opencomputers-223008:5274233")
-    compileOnly files("libs/Nevermine-Tslat-1.1.2-deobf.jar") // TODO redist classes? we only use like, four
     compileOnly deobfCurse("advanced-rocketry-236542:2985057")
     compileOnly files("libs/Galacticraft-3.4.14-GTNH-dev.jar") // https://github.com/GTNewHorizons/Galacticraft/releases/download/3.4.14-GTNH/Galacticraft-3.4.14-GTNH-dev.jar
     implementation "com.github.GTNewHorizons:GTNHLib:0.9.2-pre"

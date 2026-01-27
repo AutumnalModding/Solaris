@@ -1,9 +1,5 @@
 package xyz.lilyflower.solaris.core.transformers.global;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -11,14 +7,10 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
-import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.api.SolarisGlobalTransformer;
 import xyz.lilyflower.solaris.core.SolarisBootstrap;
 import xyz.lilyflower.solaris.core.settings.modules.VanillaTransformerSettings;
-import xyz.lilyflower.solaris.init.Solaris;
-import xyz.lilyflower.solaris.util.SolarisExtensions;
-import xyz.lilyflower.solaris.util.data.Pair;
 
 @SuppressWarnings("unused")
 public class WorldProviderGlobalTransformer implements SolarisGlobalTransformer {

@@ -8,12 +8,13 @@ import java.util.function.Consumer;
 import net.minecraftforge.common.config.Configuration;
 import xyz.lilyflower.solaris.init.Solaris;
 import xyz.lilyflower.solaris.util.SolarisExtensions;
+import xyz.lilyflower.solaris.util.data.Pair;
 
 public class SolarisConfigurationLoader {
-    private static final HashMap<SolarisExtensions.Pair<String, String>, ArrayList<Consumer<Configuration>>> MODULES = new HashMap<>();
+    private static final HashMap<Pair<String, String>, ArrayList<Consumer<Configuration>>> MODULES = new HashMap<>();
 
     public static void add(String mod, String name, Consumer<Configuration> module) {
-        SolarisExtensions.Pair<String, String> pair = new SolarisExtensions.Pair<>(mod, name);
+        Pair<String, String> pair = new Pair<>(mod, name);
         ArrayList<Consumer<Configuration>> modules = MODULES.getOrDefault(pair, new ArrayList<>());
         modules.add(module);
         MODULES.put(pair, modules);
