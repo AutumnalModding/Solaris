@@ -33,42 +33,6 @@ public class SolarisBootstrap implements IFMLLoadingPlugin {
     private static final Path MODS_DIRECTORY_PATH = new File(Launch.minecraftHome, "mods/").toPath();
     public static final boolean DEBUG_ENABLED = Files.exists(Paths.get(".classes/")) || System.getProperty("solaris.debug") != null;
 
-    @SuppressWarnings("resource")
-    public static File locate(String prefix) {
-        try {
-            return Files.walk(MODS_DIRECTORY_PATH)
-                    .filter(path -> {
-                        final String location = path.toString().replaceAll(".*mods/", "");
-                        final String basename = SolarisExtensions.basename(location).toLowerCase();
-                        final String extension = SolarisExtensions.extension(location);
-
-                        return basename.startsWith(prefix) && "jar".equals(extension);
-                    })
-                    .map(Path::toFile)
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        catch (IOException exception) {
-            return null;
-        }
-    }
-
-    public static void load(File jar) throws Exception {
-        final LaunchClassLoader loader = Launch.classLoader;
-        loader.addURL(jar.toURI().toURL());
-    }
-
-    private static void load(String prefix) {
-        try {
-            File jar = locate(prefix);
-            if (jar == null) return;
-            if (!jar.exists()) throw new FileNotFoundException(jar.toString());
-
-            load(jar);
-        } catch (Exception ignored) {}
-    }
-
     static {
         LOGGER.info("Spinning up...");
         System.setProperty("jdk.attach.allowAttachSelf", "true");
@@ -119,6 +83,8 @@ public class SolarisBootstrap implements IFMLLoadingPlugin {
             SolarisTransformerSettings.load();
         }
 
+        LaunchClassLoader loader = Launch.classLoader;
+        loader.addTransformerExclusion("com.unascribed.ears");
         LOGGER.info("Attach completed. Handing over control...");
     }
 

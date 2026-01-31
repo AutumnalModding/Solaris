@@ -2,10 +2,10 @@ package xyz.lilyflower.solaris.core;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -60,25 +60,25 @@ public class TransformerMacros {
         }
     }
 
-    public static boolean CheckMethodCall(Class<?> clazz, String name, Class<?>[] arguments, MethodInsnNode node) {
+    public static AbstractInsnNode CheckMethodCall(Class<?> clazz, String name, Class<?>[] arguments, MethodInsnNode node) {
         try {
             String owner = Type.getInternalName(clazz);
             Method method = clazz.getDeclaredMethod(name, arguments);
             String descriptor = Type.getMethodDescriptor(method);
 
             if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Validating {}#{}{} against {}#{}{}", owner, name, descriptor, node.owner, node.name, node.desc);
-            return node.owner.equals(owner) && node.desc.equals(descriptor);
+            return (node.owner.equals(owner) && node.desc.equals(descriptor)) ? node : null;
         } catch (Exception exception) {
             LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED VERFIYING CALL: " + name, exception);
         }
 
-        return false;
+        return null;
     }
 
     public static void KillMethodCall(Class<?> clazz, String name, Class<?>[] arguments, InsnList list) {
         list.iterator().forEachRemaining(node -> {
-            if (!(node instanceof MethodInsnNode method)) return;
-            if (CheckMethodCall(clazz, name, arguments, method)) {
+            if (node instanceof MethodInsnNode method) {
+                if (CheckMethodCall(clazz, name, arguments, method) == null) return;
                 Type descriptor = Type.getMethodType(method.desc);
                 for (Type argument : descriptor.getArgumentTypes()) { // no voidtype on the stack!
                     list.insertBefore(method, new InsnNode(Opcodes.SASTORE + argument.getSize()));
@@ -94,11 +94,13 @@ public class TransformerMacros {
     @SuppressWarnings("unused")
     public static void ReplaceMethodCall(Class<?> clazz, String name, Class<?>[] arguments, InsnList list, MethodInsnNode target) {
         list.iterator().forEachRemaining(node -> {
-            if (!(node instanceof MethodInsnNode method)) return;
-            if (!CheckMethodCall(clazz, name, arguments, method)) return;
-            if (SolarisBootstrap.DEBUG_ENABLED) SolarisBootstrap.LOGGER.debug("Replacing call to {}#{}{} with call to {}#{}{}", method.owner, method.name, method.desc, target.owner, target.name, target.desc);
-            list.insertBefore(method, target);
-            list.remove(method);
+            if (node instanceof MethodInsnNode method) {
+                if (CheckMethodCall(clazz, name, arguments, method) == null) return;
+                if (SolarisBootstrap.DEBUG_ENABLED)
+                    SolarisBootstrap.LOGGER.debug("Replacing call to {}#{}{} with call to {}#{}{}", method.owner, method.name, method.desc, target.owner, target.name, target.desc);
+                list.insertBefore(method, target);
+                list.remove(method);
+            }
         });
     }
 
