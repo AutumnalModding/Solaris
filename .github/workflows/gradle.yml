@@ -15,7 +15,7 @@ jobs:
         architecture: x64
 
     - name: Download Galacticraft deobf jar
-      run: curl https://github.com/GTNewHorizons/Galacticraft/releases/download/3.4.14-GTNH/Galacticraft-3.4.14-GTNH-dev.jar -o libs/
+      run: curl https://github.com/GTNewHorizons/Galacticraft/releases/download/3.4.14-GTNH/Galacticraft-3.4.14-GTNH-dev.jar -o libs/Galacticraft-3.4.14-GTNH-dev.jar
 
     - name: Download BON2
       run: curl https://github.com/GTNewHorizons/BON2/releases/download/2.5.1/BON2-2.5.1-CUSTOM-all.jar -o BON2.jar
