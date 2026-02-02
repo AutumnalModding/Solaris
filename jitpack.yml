@@ -1,0 +1,12 @@
+jdk:
+  - openjdk21
+
+before_install:
+  - mkdir -p libs
+  - curl -L https://github.com/GTNewHorizons/Galacticraft/releases/download/3.4.14-GTNH/Galacticraft-3.4.14-GTNH-dev.jar -o libs/Galacticraft-3.4.14-GTNH-dev.jar
+  - curl -L https://github.com/GTNewHorizons/BON2/releases/download/2.5.1/BON2-2.5.1-CUSTOM-all.jar -o BON2.jar
+  - curl https://mediafilez.forgecdn.net/files/3806/537/GalaxySpace-1.7.10-1.2.15.jar -o GalaxySpace.jar
+  - java -jar BON2.jar --mcVer 1.7.10 --mappingsVer stable_12 --inputJar GalaxySpace.jar --outputJar libs/GalaxySpace-1.7.10-1.2.15-deobf.jar
+
+install:
+  - ./gradlew clean build
