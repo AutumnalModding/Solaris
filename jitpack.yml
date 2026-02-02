@@ -9,4 +9,4 @@ before_install:
   - java -jar BON2.jar --mcVer 1.7.10 --mappingsVer stable_12 --inputJar GalaxySpace.jar --outputJar libs/GalaxySpace-1.7.10-1.2.15-deobf.jar
 
 install:
-  - ./gradlew clean build
+  - ./gradlew clean build jar publishToMavenLocal -Dorg.gradle.java.home=$JAVA_HOME
