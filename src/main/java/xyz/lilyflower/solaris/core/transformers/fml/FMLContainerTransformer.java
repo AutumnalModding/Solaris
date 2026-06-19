@@ -5,7 +5,7 @@ import cpw.mods.fml.common.StartupQuery;
 import org.apache.logging.log4j.Level;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @SuppressWarnings("unused") // "The world state is utterly corrupted" my ass, FML.
 public class FMLContainerTransformer implements SolarisClassTransformer {
@@ -16,9 +16,9 @@ public class FMLContainerTransformer implements SolarisClassTransformer {
 
     void readData(TargetData data) {
         if (StabilityTransformerSettings.STABILITY_OVERRIDES) {
-            TransformerMacros.KillMethodCall(StartupQuery.class, "abort", new Class<?>[]{}, data.method().instructions);
-            TransformerMacros.KillMethodCall(StartupQuery.class, "notify", new Class<?>[]{String.class}, data.method().instructions);
-            TransformerMacros.KillMethodCall(FMLLog.class, "log", new Class<?>[]{Level.class, Throwable.class, String.class, Object[].class}, data.method().instructions);
+            TransformationHelper.kill(StartupQuery.class, "abort", new Class<?>[]{}, data.method().instructions);
+            TransformationHelper.kill(StartupQuery.class, "notify", new Class<?>[]{String.class}, data.method().instructions);
+            TransformationHelper.kill(FMLLog.class, "log", new Class<?>[]{Level.class, Throwable.class, String.class, Object[].class}, data.method().instructions);
         }
     }
 }

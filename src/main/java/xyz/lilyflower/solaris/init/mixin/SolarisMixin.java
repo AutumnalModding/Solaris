@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public enum MultimodMixin {
+public enum SolarisMixin {
     SoulShot("quiverbow.SoulShotMixin", MixinTarget.QUIVERBOW), // not actually multimod lol, but needs to be here
     LOTRTickHandlerClient("lotr.bug.LOTRTickHandlerClientMixin", Side.CLIENT, MixinTarget.LOTR, MixinTarget.WITCHERY),
     LOTRBiomeVariantStorageShort("lotr.misc.LOTRBiomeVariantStorageShortMixin", Side.CLIENT, MixinTarget.LOTR, MixinTarget.ENDLESSIDS),
@@ -18,13 +18,13 @@ public enum MultimodMixin {
     private final Side side;
 
     @SuppressWarnings("SameParameterValue")
-    MultimodMixin(String mixin, Side side, MixinTarget... targets) {
+    SolarisMixin(String mixin, Side side, MixinTarget... targets) {
         this.mixin = mixin;
         this.targets = Arrays.asList(targets);
         this.side = side;
     }
 
-    MultimodMixin(String mixin, MixinTarget... targets) {
+    SolarisMixin(String mixin, MixinTarget... targets) {
         this.mixin = mixin;
         this.targets = Arrays.asList(targets);
         this.side = Side.BOTH;

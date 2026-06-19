@@ -46,7 +46,7 @@ public class SolarisMixinLoader implements IMixinConfigPlugin {
         }
 
         List<String> mixins = new ArrayList<>();
-        for (MultimodMixin mixin : MultimodMixin.values()) {
+        for (SolarisMixin mixin : SolarisMixin.values()) {
             if (mixin.shouldLoad(loaded)) {
                 mixins.add(mixin.mixin);
                 LOGGER.debug("Loading mixin: {}", mixin.mixin);

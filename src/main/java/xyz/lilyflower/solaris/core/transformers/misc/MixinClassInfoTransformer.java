@@ -4,7 +4,7 @@ import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.logging.Level;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.SolarisBootstrap;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @SuppressWarnings("unused")
 public class MixinClassInfoTransformer implements SolarisClassTransformer {
@@ -15,6 +15,7 @@ public class MixinClassInfoTransformer implements SolarisClassTransformer {
 
     void forName(TargetData data) {
         SolarisBootstrap.LOGGER.info("Shutting Mixin the fuck up!");
-        TransformerMacros.KillMethodCall(ILogger.class, "catching", new Class<?>[]{Level.class, Throwable.class}, data.method().instructions);
+        TransformationHelper.kill(ILogger.class, "catching", new Class<?>[]{Level.class, Throwable.class}, data.method().instructions);
+        TransformationHelper.kill(ILogger.class, "warn", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
     }
 }

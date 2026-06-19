@@ -1,6 +1,9 @@
 package xyz.lilyflower.solaris.core;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
@@ -74,9 +77,14 @@ public class SolarisTransformer implements ClassFileTransformer {
         }
 
         if (SolarisBootstrap.DEBUG_ENABLED) {
-            File dump = new File(".classes/" + name.replaceAll("/", "∕") + ".class");
-            try (FileOutputStream output = new FileOutputStream(dump)) {
-                output.write(bytes);
+            Path root = Paths.get(".classes");
+            Path dump = root.resolve(name + ".class").normalize();
+            if (!dump.normalize().startsWith(root.normalize())) {
+                LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "REFUSING TO DUMP CLASS OUTSIDE ROOT: " + name, null);
+            }
+            try {
+                Files.createDirectories(dump.getParent());
+                Files.write(dump, bytes);
             } catch (IOException exception) {
                 LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED DUMPING CLASS: " + name, exception);
             }

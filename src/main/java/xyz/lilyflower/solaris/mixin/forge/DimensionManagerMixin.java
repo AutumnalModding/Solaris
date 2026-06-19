@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.lilyflower.solaris.configuration.modules.SolarisVanilla;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @Mixin(value = DimensionManager.class, remap = false)
 public class DimensionManagerMixin {
     @Redirect(method = "unloadWorlds", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/FMLLog;warning(Ljava/lang/String;[Ljava/lang/Object;)V"))
     private static void shutup(String message, Object[] data) {
-        TransformerMacros.__INTERNAL_NOOP();
+        TransformationHelper.__INTERNAL_NOOP();
     }
 
     @Inject(method = "setWorld", at = @At("HEAD"), cancellable = true)

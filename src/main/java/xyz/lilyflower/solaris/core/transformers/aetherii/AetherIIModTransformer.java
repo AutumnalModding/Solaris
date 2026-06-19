@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.AetherIITransformerSettings;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @SuppressWarnings("unused")
 public class AetherIIModTransformer implements SolarisClassTransformer {
@@ -22,7 +22,7 @@ public class AetherIIModTransformer implements SolarisClassTransformer {
 
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new JumpInsnNode(Opcodes.IFNE, skip));
-        TransformerMacros.GetStaticField(AetherIITransformerSettings.class, "FREEFALL_TARGET", list);
+        TransformationHelper.field(AetherIITransformerSettings.class, "FREEFALL_TARGET", list);
         list.add(new VarInsnNode(Opcodes.ISTORE, 1));
         list.add(skip);
 

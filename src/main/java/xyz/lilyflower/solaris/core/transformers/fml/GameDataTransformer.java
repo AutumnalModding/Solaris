@@ -13,7 +13,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
 import xyz.lilyflower.solaris.core.settings.modules.StabilityTransformerSettings;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @SuppressWarnings("unused")
 public class GameDataTransformer implements SolarisClassTransformer {
@@ -44,7 +44,7 @@ public class GameDataTransformer implements SolarisClassTransformer {
     }
 
     void registerItem(TargetData data) {
-        TransformerMacros.KillMethodCall(FMLLog.class, "bigWarning", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
+        TransformationHelper.kill(FMLLog.class, "bigWarning", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
         if (data.method().access == Opcodes.ACC_PRIVATE) {
             if (StabilityTransformerSettings.GROSS_REGISTRY_HACKS) {
                 InsnList list = new InsnList();
@@ -66,7 +66,7 @@ public class GameDataTransformer implements SolarisClassTransformer {
     }
 
     void registerBlock(TargetData data) {
-        TransformerMacros.KillMethodCall(FMLLog.class, "bigWarning", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
+        TransformationHelper.kill(FMLLog.class, "bigWarning", new Class<?>[]{String.class, Object[].class}, data.method().instructions);
         data.method().access = Opcodes.ACC_PUBLIC;
     }
 

@@ -1,8 +1,6 @@
 package xyz.lilyflower.solaris.core;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +20,6 @@ import xyz.lilyflower.solaris.api.TransformerSettingsModule;
 import xyz.lilyflower.solaris.core.settings.SolarisTransformerSettings;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.util.reflect.ClasspathScanning;
-import xyz.lilyflower.solaris.util.SolarisExtensions;
 
 @SuppressWarnings("unused")
 @IFMLLoadingPlugin.MCVersion("1.7.10")

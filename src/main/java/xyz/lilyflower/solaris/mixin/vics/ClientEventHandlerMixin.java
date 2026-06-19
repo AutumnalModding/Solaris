@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import xyz.lilyflower.solaris.configuration.modules.SolarisMW;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @Mixin(ClientEventHandler.class)
 public class ClientEventHandlerMixin {
@@ -18,6 +18,6 @@ public class ClientEventHandlerMixin {
 
     @Redirect(method = "updateOnStartTick", at = @At(value = "INVOKE", target = "Ljava/io/PrintStream;println(Ljava/lang/String;)V"), remap = false)
     public void shutup(PrintStream instance, String x) {
-        TransformerMacros.__INTERNAL_NOOP();
+        TransformationHelper.__INTERNAL_NOOP();
     }
 }

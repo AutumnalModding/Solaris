@@ -18,7 +18,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import xyz.lilyflower.solaris.debug.LoggingHelper;
 import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 
-public class TransformerMacros {
+public class TransformationHelper {
     @SuppressWarnings("unused")
     public static void LogMessage(InsnList list, String level, String message) {
         InsnList instructions = new InsnList();
@@ -31,7 +31,7 @@ public class TransformerMacros {
     }
 
     @SuppressWarnings("unused")
-    public static void KillJVM(InsnList list, int code, boolean hard) {
+    public static void die(InsnList list, int code, boolean hard) {
         InsnList instructions = new InsnList();
 
         instructions.add(new IntInsnNode(Opcodes.SIPUSH, code));
@@ -49,7 +49,7 @@ public class TransformerMacros {
         list.add(new LdcInsnNode((raw ? "" : "$APPLYPREFIX$") + target)); // see GameDataTransformer
     }
 
-    public static void GetStaticField(Class<?> clazz, String name, InsnList list) {
+    public static void field(Class<?> clazz, String name, InsnList list) {
         try {
             String owner = Type.getInternalName(clazz);
             Field field = clazz.getDeclaredField(name);
@@ -60,7 +60,7 @@ public class TransformerMacros {
         }
     }
 
-    public static AbstractInsnNode CheckMethodCall(Class<?> clazz, String name, Class<?>[] arguments, MethodInsnNode node) {
+    public static AbstractInsnNode verify(Class<?> clazz, String name, Class<?>[] arguments, MethodInsnNode node) {
         try {
             String owner = Type.getInternalName(clazz);
             Method method = clazz.getDeclaredMethod(name, arguments);
@@ -75,10 +75,10 @@ public class TransformerMacros {
         return null;
     }
 
-    public static void KillMethodCall(Class<?> clazz, String name, Class<?>[] arguments, InsnList list) {
+    public static void kill(Class<?> clazz, String name, Class<?>[] arguments, InsnList list) {
         list.iterator().forEachRemaining(node -> {
             if (node instanceof MethodInsnNode method) {
-                if (CheckMethodCall(clazz, name, arguments, method) == null) return;
+                if (verify(clazz, name, arguments, method) == null) return;
                 Type descriptor = Type.getMethodType(method.desc);
                 for (Type argument : descriptor.getArgumentTypes()) { // no voidtype on the stack!
                     list.insertBefore(method, new InsnNode(Opcodes.SASTORE + argument.getSize()));
@@ -91,11 +91,20 @@ public class TransformerMacros {
         });
     }
 
+    public static void kill(String target, String name, Class<?>[] arguments, InsnList list) {
+        try {
+            Class<?> clazz = Class.forName(target);
+            kill(clazz, name, arguments, list);
+        } catch (ReflectiveOperationException exception) {
+            LoggingHelper.oopsie(SolarisBootstrap.LOGGER, "FAILED REFLECTING CLASS: " + target, exception);
+        }
+    }
+
     @SuppressWarnings("unused")
-    public static void ReplaceMethodCall(Class<?> clazz, String name, Class<?>[] arguments, InsnList list, MethodInsnNode target) {
+    public static void replace(Class<?> clazz, String name, Class<?>[] arguments, InsnList list, MethodInsnNode target) {
         list.iterator().forEachRemaining(node -> {
             if (node instanceof MethodInsnNode method) {
-                if (CheckMethodCall(clazz, name, arguments, method) == null) return;
+                if (verify(clazz, name, arguments, method) == null) return;
                 if (SolarisBootstrap.DEBUG_ENABLED)
                     SolarisBootstrap.LOGGER.debug("Replacing call to {}#{}{} with call to {}#{}{}", method.owner, method.name, method.desc, target.owner, target.name, target.desc);
                 list.insertBefore(method, target);

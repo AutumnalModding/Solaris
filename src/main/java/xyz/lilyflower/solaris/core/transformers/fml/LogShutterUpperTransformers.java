@@ -3,7 +3,7 @@ package xyz.lilyflower.solaris.core.transformers.fml;
 import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import xyz.lilyflower.solaris.api.SolarisClassTransformer;
-import xyz.lilyflower.solaris.core.TransformerMacros;
+import xyz.lilyflower.solaris.core.TransformationHelper;
 
 @SuppressWarnings("unused")
 public class LogShutterUpperTransformers {
@@ -14,7 +14,7 @@ public class LogShutterUpperTransformers {
         }
 
         void discover(TargetData data) { // Oh my God shut the Fuck Up
-            TransformerMacros.KillMethodCall(FMLLog.class, "log", new Class<?>[]{Level.class, Throwable.class, String.class, Object[].class}, data.method().instructions);
+            TransformationHelper.kill(FMLLog.class, "log", new Class<?>[]{Level.class, Throwable.class, String.class, Object[].class}, data.method().instructions);
         }
     }
 }

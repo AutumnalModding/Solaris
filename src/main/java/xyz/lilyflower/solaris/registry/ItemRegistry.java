@@ -39,4 +39,10 @@ public class ItemRegistry implements ContentRegistry<Item> {
     public boolean runnable() {
         return Solaris.STAGE == LoadStage.PRELOADER;
     }
+
+    static {
+        for (int i = 1; i <= 8; i++) {
+            ContentRegistry.create("chip0" + i, Item.class, ContentRegistry.EMPTY, ITEMS);
+        }
+    }
 }

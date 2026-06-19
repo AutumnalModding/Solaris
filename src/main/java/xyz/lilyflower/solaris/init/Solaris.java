@@ -37,7 +37,7 @@ import xyz.lilyflower.solaris.util.list.InvertedList;
 import xyz.lilyflower.solaris.util.reflect.SolarisReflection;
 import xyz.lilyflower.solaris.world.DimensionalWorldType;
 
-@Mod(modid = "solaris", version = "3.0", dependencies = "before:GalacticraftCore;after:lotr")
+@Mod(modid = "solaris", version = "4.0", dependencies = "before:GalacticraftCore;after:lotr")
 public class Solaris {
     public static LoadStage STAGE = LoadStage.BOOTSTRAP;
     public static final Logger LOGGER = LogManager.getLogger("Solaris");
